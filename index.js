@@ -42,42 +42,9 @@ app.use(express.json());
 // them explicitly here so the intent is clear and .env is respected.
 // ----------------------------------------------------------------------
 const pool = new Pool({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  database: process.env.PGDATABASE,
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Neon requires SSL
 });
-
-pool.on('error', (err) => {
-  console.error('Unexpected PostgreSQL pool error:', err);
-});
-
-// Ensure the table exists on boot (safe no-op if it already does), and
-// patch in any columns added after the table was first created — plain
-// `CREATE TABLE IF NOT EXISTS` does NOT add new columns to an existing
-// table, so without this, schema changes (like adding `synopsis`) would
-// silently fail to apply for anyone who already has the table.
-async function ensureSchema() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS media_entries (
-      id           SERIAL PRIMARY KEY,
-      mal_id       INT NOT NULL,
-      title        VARCHAR(255) NOT NULL,
-      media_type   VARCHAR(20) DEFAULT 'manga',
-      cover_url    TEXT NOT NULL,
-      rating       INT CHECK (rating >= 1 AND rating <= 10),
-      progress     VARCHAR(100),
-      status       VARCHAR(50) DEFAULT 'Reading',
-      review       TEXT,
-      synopsis     TEXT,
-      date_added   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `);
-
-  // Backfill columns for tables created before they existed in the schema.
-  await pool.query(`ALTER TABLE media_entries ADD COLUMN IF NOT EXISTS synopsis TEXT;`);
-}
 
 // ----------------------------------------------------------------------
 // Jikan API helper

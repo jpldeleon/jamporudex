@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="rose-pine">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JamporuDex</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header">
+    <h1 class="logo">
+      <span class="logo-en">JamporuDex</span>
+    </h1>
+    <p class="tagline">your personal anime &amp; manga index</p>
+
+    <!-- Sort / Filter controls -->
+    <form class="controls-bar" method="GET" action="/">
+      <div class="control-group">
+        <label for="sort">Sort</label>
+        <select id="sort" name="sort" onchange="this.form.submit()">
+          <option value="recency" <%= currentSort === 'recency' ? 'selected' : '' %>>Recently Added</option>
+          <option value="rating" <%= currentSort === 'rating' ? 'selected' : '' %>>Rating</option>
+          <option value="title" <%= currentSort === 'title' ? 'selected' : '' %>>Title</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="filter">Status</label>
+        <select id="filter" name="filter" onchange="this.form.submit()">
+          <% ['All','Reading','Watching','Completed','On-Hold','Dropped','Plan to Read'].forEach(function(s){ %>
+            <option value="<%= s %>" <%= currentFilter === s ? 'selected' : '' %>><%= s %></option>
+          <% }); %>
+        </select>
+      </div>
+    </form>
+  </header>
+
+  <!-- ============================================================
+       MAIN GRID
+  ============================================================ -->
+  <main class="container">
+    <% if (entries.length === 0) { %>
+      <div class="empty-state">
+        <p>Your index is empty. Hit <strong>+ Add Entry</strong> below to start tracking.</p>
+      </div>
+    <% } else { %>
+      <section class="entry-grid">
+        <% entries.forEach(function(entry) { %>
+          <article
+            class="entry-card"
+            data-id="<%= entry.id %>"
+            data-title="<%= entry.title %>"
+            data-cover="<%= entry.cover_url %>"
+            data-synopsis="<%= (entry.synopsis || '').replace(/"/g, '&quot;') %>"
+            data-review="<%= (entry.review || '').replace(/"/g, '&quot;') %>"
+            data-status="<%= entry.status %>"
+            data-progress="<%= entry.progress || '' %>"
+            data-rating="<%= entry.rating || '' %>"
+            data-type="<%= entry.media_type %>"
+          >
+            <button class="card-cover-btn" aria-label="Open <%= entry.title %>">
+              <img class="card-cover" src="<%= entry.cover_url %>" alt="<%= entry.title %> cover" loading="lazy" />
+              <span class="badge badge-status status-<%= entry.status.replace(/\s+/g,'-').toLowerCase() %>"><%= entry.status %></span>
+            </button>
+            <div class="card-body">
+              <h3 class="card-title"><%= entry.title %></h3>
+              <p class="card-progress"><%= entry.progress || '—' %></p>
+              <div class="card-rating" aria-label="Rating <%= entry.rating || 0 %> of 10">
+                <% for (let i = 1; i <= 10; i++) { %>
+                  <span class="star <%= i <= (entry.rating || 0) ? 'star-filled' : '' %>">★</span>
+                <% } %>
+              </div>
+              <% if (entry.review) { %>
+                <p class="card-review">"<%= entry.review.length > 90 ? entry.review.slice(0,90)+'…' : entry.review %>"</p>
+              <% } %>
+            </div>
+          </article>
+        <% }); %>
+      </section>
+    <% } %>
+  </main>
+
+  <!-- ============================================================
+       FLOATING DOCK
+  ============================================================ -->
+  <nav class="floating-dock" aria-label="Quick actions">
+    <button id="openAddModal" class="dock-btn dock-btn-add" aria-label="Add entry">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Add Entry</span>
+    </button>
+
+    <button id="themeToggle" class="dock-btn dock-btn-theme" aria-label="Toggle theme">
+      <!-- Rosé Pine (dark base) icon: crescent moon -->
+      <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+        <path d="M18 4l.5 1.5L20 6l-1.5.5L18 8l-.5-1.5L16 6l1.5-.5L18 4Z"/>
+      </svg>
+      <!-- Rosé Pine Moon (cool dark) icon: sparkle star -->
+      <svg id="iconSparkle" class="theme-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l1.9 5.4L19 10l-5.1 1.6L12 17l-1.9-5.4L5 10l5.1-1.6L12 3Z"/>
+        <path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7L19 15Z"/>
+      </svg>
+    </button>
+
+    <button id="scrollTopBtn" class="dock-btn dock-btn-top" aria-label="Scroll to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       ADD ENTRY MODAL
+  ============================================================ -->
+  <div id="addModalOverlay" class="modal-overlay hidden">
+    <div class="modal add-modal" role="dialog" aria-modal="true" aria-labelledby="addModalTitle">
+      <button class="modal-close" data-close-modal="addModalOverlay" aria-label="Close">&times;</button>
+      <h2 id="addModalTitle">Add to Index</h2>
+
+      <div class="search-row">
+        <select id="searchType">
+          <option value="manga" selected>Manga</option>
+          <option value="anime">Anime</option>
+        </select>
+        <input type="text" id="searchTitle" placeholder="Search by title…" autocomplete="off" />
+        <button id="searchBtn" type="button">Search</button>
+      </div>
+
+      <div id="searchResults" class="search-results"></div>
+
+      <form id="addForm" action="/entries" method="POST" class="entry-form hidden">
+        <input type="hidden" name="mal_id" id="f_mal_id" />
+        <input type="hidden" name="title" id="f_title" />
+        <input type="hidden" name="media_type" id="f_media_type" />
+        <input type="hidden" name="cover_url" id="f_cover_url" />
+        <input type="hidden" name="synopsis" id="f_synopsis" />
+
+        <div class="selected-preview" id="selectedPreview"></div>
+
+        <label>Status
+          <select name="status">
+            <option>Reading</option>
+            <option>Watching</option>
+            <option>Completed</option>
+            <option>On-Hold</option>
+            <option>Dropped</option>
+            <option>Plan to Read</option>
+          </select>
+        </label>
+
+        <label>Progress
+          <input type="text" name="progress" placeholder="e.g. Ch. 120 / Ep. 12" />
+        </label>
+
+        <label>Rating (1–10)
+          <input type="number" name="rating" min="1" max="10" placeholder="8" />
+        </label>
+
+        <label>Review
+          <textarea name="review" rows="3" placeholder="Your thoughts…"></textarea>
+        </label>
+
+        <button type="submit" class="btn-primary">Save to Index</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       EDIT ENTRY MODAL
+  ============================================================ -->
+  <div id="editModalOverlay" class="modal-overlay hidden">
+    <div class="modal edit-modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+      <button class="modal-close" data-close-modal="editModalOverlay" aria-label="Close">&times;</button>
+      <h2 id="editModalTitle">Edit Entry</h2>
+
+      <form id="editForm" class="entry-form" method="POST">
+        <label>Status
+          <select name="status" id="e_status">
+            <option>Reading</option>
+            <option>Watching</option>
+            <option>Completed</option>
+            <option>On-Hold</option>
+            <option>Dropped</option>
+            <option>Plan to Read</option>
+          </select>
+        </label>
+
+        <label>Progress
+          <input type="text" name="progress" id="e_progress" />
+        </label>
+
+        <label>Rating (1–10)
+          <input type="number" name="rating" id="e_rating" min="1" max="10" />
+        </label>
+
+        <label>Review
+          <textarea name="review" id="e_review" rows="3"></textarea>
+        </label>
+
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       LIGHTBOX
+  ============================================================ -->
+  <div id="lightboxOverlay" class="lightbox-overlay hidden">
+    <div class="lightbox" role="dialog" aria-modal="true">
+      <button class="modal-close" id="lightboxClose" aria-label="Close">&times;</button>
+      <div class="lightbox-grid">
+        <img id="lb_cover" class="lightbox-cover" src="" alt="" />
+        <div class="lightbox-info">
+          <span class="badge" id="lb_type"></span>
+          <h2 id="lb_title"></h2>
+          <div class="lightbox-rating" id="lb_rating"></div>
+          <p class="lightbox-progress" id="lb_progress"></p>
+          <h4>Synopsis</h4>
+          <p class="lightbox-synopsis" id="lb_synopsis"></p>
+          <h4>Your Review</h4>
+          <p class="lightbox-review" id="lb_review"></p>
+          <div class="lightbox-actions">
+            <button id="lb_edit" class="btn-secondary">Edit</button>
+            <form id="lb_deleteForm" method="POST">
+              <button type="submit" class="btn-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

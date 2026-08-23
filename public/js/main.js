@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyTheme(theme) {
     root.setAttribute('data-theme', theme);
-    const isLight = theme === 'tokyo-night-light';
-    iconMoon.classList.toggle('hidden', isLight);
-    iconSparkle.classList.toggle('hidden', !isLight);
+    const isSynth = theme === 'neo-tokyo-synth';
+    iconMoon.classList.toggle('hidden', isSynth);
+    iconSparkle.classList.toggle('hidden', !isSynth);
     localStorage.setItem(THEME_KEY, theme);
   }
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   themeToggleBtn.addEventListener('click', () => {
     const current = root.getAttribute('data-theme');
-    applyTheme(current === 'tokyo-night-storm' ? 'tokyo-night-light' : 'tokyo-night-storm');
+    applyTheme(current === 'tokyo-night-storm' ? 'neo-tokyo-synth' : 'tokyo-night-storm');
   });
 
   // ------------------------------------------------------------------
@@ -38,6 +38,38 @@ document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------
   document.getElementById('scrollTopBtn').addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ------------------------------------------------------------------
+  // FLOATING DOCK — single-pill quick actions
+  // Desktop: CSS `:hover` on .floating-dock reveals the menu above the
+  // trigger. Touch devices have no hover, so a click also toggles the
+  // same `.is-open` class; either path shows the identical menu.
+  // ------------------------------------------------------------------
+  const floatingDock = document.getElementById('floatingDock');
+  const floatingDockTrigger = document.getElementById('floatingDockTrigger');
+
+  function closeFloatingDock() {
+    floatingDock.classList.remove('is-open');
+    floatingDockTrigger.setAttribute('aria-expanded', 'false');
+  }
+
+  floatingDockTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = floatingDock.classList.toggle('is-open');
+    floatingDockTrigger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Picking any action closes the menu again rather than leaving it
+  // pinned open after a tap.
+  document.querySelectorAll('#floatingDockMenu .dock-btn').forEach((btn) => {
+    btn.addEventListener('click', closeFloatingDock);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!floatingDock.contains(e.target) && floatingDock.classList.contains('is-open')) {
+      closeFloatingDock();
+    }
   });
 
   // ------------------------------------------------------------------
@@ -70,6 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-overlay:not(.hidden), .lightbox-overlay:not(.hidden)')
       .forEach((el) => el.classList.add('hidden'));
     document.body.style.overflow = '';
+    closeFloatingDock();
+    closeHeaderProjectsMenu();
   });
 
   // ------------------------------------------------------------------
@@ -222,13 +256,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ------------------------------------------------------------------
-  // SIDE DOCK — mobile trigger, projects subnav, email copy + toast
+  // HEADER — "Other Projects" dropdown + email copy toast
+  // Same hover(CSS)/click(JS) reveal pattern as the floating dock.
   // ------------------------------------------------------------------
-  const sideDock = document.getElementById('sideDock');
-  const sideDockTrigger = document.getElementById('sideDockTrigger');
-  const projectsToggle = document.getElementById('projectsToggle');
-  const projectsSubnav = document.getElementById('projectsSubnav');
-  const copyEmailBtn = document.getElementById('copyEmailBtn');
+  const headerProjectsGroup = document.getElementById('headerProjectsGroup');
+  const headerProjectsToggle = document.getElementById('headerProjectsToggle');
   const dockToast = document.getElementById('dockToast');
 
   let toastTimer;
@@ -239,30 +271,28 @@ document.addEventListener('DOMContentLoaded', () => {
     toastTimer = setTimeout(() => dockToast.classList.remove('is-visible'), 2200);
   }
 
-  // Mobile: tap the corner trigger to open/close the panel as an overlay.
-  // (On desktop the CSS :hover on .side-dock__panel handles this instead.)
-  sideDockTrigger.addEventListener('click', () => {
-    const isOpen = sideDock.classList.toggle('is-open');
-    sideDockTrigger.setAttribute('aria-expanded', String(isOpen));
+  function closeHeaderProjectsMenu() {
+    headerProjectsGroup.classList.remove('is-open');
+    headerProjectsToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  headerProjectsToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = headerProjectsGroup.classList.toggle('is-open');
+    headerProjectsToggle.setAttribute('aria-expanded', String(isOpen));
   });
 
   document.addEventListener('click', (e) => {
-    if (!sideDock.contains(e.target) && sideDock.classList.contains('is-open')) {
-      sideDock.classList.remove('is-open');
-      sideDockTrigger.setAttribute('aria-expanded', 'false');
+    if (!headerProjectsGroup.contains(e.target) && headerProjectsGroup.classList.contains('is-open')) {
+      closeHeaderProjectsMenu();
     }
-  });
-
-  // Folder icon toggles the project subnav open/closed.
-  projectsToggle.addEventListener('click', () => {
-    const isOpen = projectsSubnav.classList.toggle('hidden') === false;
-    projectsToggle.setAttribute('aria-expanded', String(isOpen));
   });
 
   // Email is never written in the HTML — it's assembled from two data
   // attributes at click time, then copied straight to the clipboard.
-  copyEmailBtn.addEventListener('click', async () => {
-    const address = `${copyEmailBtn.dataset.user}@${copyEmailBtn.dataset.domain}`;
+  document.getElementById('headerCopyEmailBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const address = `${btn.dataset.user}@${btn.dataset.domain}`;
     try {
       await navigator.clipboard.writeText(address);
       showDockToast('Email copied to clipboard!');

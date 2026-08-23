@@ -51,23 +51,28 @@
   --iris-rgb: 187, 154, 247;
 }
 
-/* Tokyo Night Light — same source palette, light variant */
-[data-theme="tokyo-night-light"] {
-  --base:     #e6e7ed;
-  --surface:  #ffffff;
-  --overlay:  #d5d6e0;
-  --text:     #343b58;
-  --love:     #8c4351;
-  --gold:     #8f5e15;
-  --rose:     #965027;
-  --pine:     #385f0d;
-  --foam:     #006c86;
-  --iris:     #5a3e8e;
-  --muted:    #6c6e75;
-  --highlight-low: #e2e3ea;
-  --base-rgb: 230, 231, 237;
-  --text-rgb: 52, 59, 88;
-  --iris-rgb: 90, 62, 142;
+/* Neo Tokyo Synth — https://www.color-hex.com/color-palette/33626
+   (#55e7ff, #00ccfd, #ff34b3, #2011a2, #201148). The five palette hexes
+   are used literally for base/overlay/link/accent duty below; --surface,
+   --highlight-low, --text and --muted are tuned off of them for contrast,
+   and --iris/--pine are close blends of the palette's blue+pink so every
+   status/accent role still reads as part of the same neon family. */
+[data-theme="neo-tokyo-synth"] {
+  --base:     #201148;
+  --surface:  #2a1868;
+  --overlay:  #2011a2;
+  --text:     #e8f7ff;
+  --love:     #ff34b3;
+  --gold:     #55e7ff;
+  --rose:     #55e7ff;
+  --pine:     #22e8a3;
+  --foam:     #00ccfd;
+  --iris:     #9b2ad0;
+  --muted:    #9a9fd9;
+  --highlight-low: #170b36;
+  --base-rgb: 32, 17, 72;
+  --text-rgb: 232, 247, 255;
+  --iris-rgb: 155, 42, 208;
 }
 
 * { box-sizing: border-box; }
@@ -94,10 +99,72 @@ a { color: var(--foam); }
    HEADER
 ---------------------------------------------------------------------- */
 .site-header {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 3rem 1.5rem 1.5rem;
   text-align: center;
+}
+
+/* ----------------------------------------------------------------------
+   HEADER LINKS — CV, GitHub repo, email. Same destinations as the side
+   dock, just surfaced up top where they're immediately visible instead
+   of tucked behind a hover-only side panel.
+---------------------------------------------------------------------- */
+.header-links {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  gap: 0.6rem;
+  z-index: 5;
+}
+
+.header-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(var(--base-rgb), 0.5);
+  border: 1px solid rgba(var(--text-rgb), 0.16);
+  color: var(--muted);
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.header-link:hover {
+  transform: translateY(-2px);
+  background: rgba(var(--text-rgb), 0.12);
+}
+
+.header-link--cv:hover { color: var(--iris); border-color: var(--iris); }
+.header-link--github:hover { color: var(--foam); border-color: var(--foam); }
+.header-link--email:hover { color: var(--pine); border-color: var(--pine); }
+.header-link--projects:hover { color: var(--gold); border-color: var(--gold); }
+
+@media (max-width: 640px) {
+  .header-links {
+    position: static;
+    justify-content: center;
+    margin: 1rem 0 0;
+  }
+
+  /* Centered under the folder icon instead of right-aligned, so it
+     can't run off the edge of a narrow viewport. */
+  .header-link-menu {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+  }
+
+  .header-link-group:hover .header-link-menu,
+  .header-link-group.is-open .header-link-menu {
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .logo {
@@ -290,126 +357,92 @@ a { color: var(--foam); }
 
 /* ----------------------------------------------------------------------
    FLOATING DOCK
+   Collapsed to a single circular trigger. Hovering (desktop) or clicking
+   (any device — main.js toggles `.is-open`) reveals a vertical menu of
+   the three quick actions floating just above it.
 ---------------------------------------------------------------------- */
 .floating-dock {
   position: fixed;
   left: 50%;
   bottom: 1.75rem;
   transform: translateX(-50%);
+  z-index: 40;
+}
+
+.floating-dock__trigger {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 0.8rem;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
   border-radius: 999px;
-  background: rgba(var(--base-rgb), 0.62);
-  border: 1px solid rgba(var(--text-rgb), 0.12);
+  background: linear-gradient(135deg, var(--iris), var(--love));
+  color: var(--base);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.25);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.floating-dock__trigger:hover,
+.floating-dock.is-open .floating-dock__trigger {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.floating-dock__trigger-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.floating-dock.is-open .floating-dock__trigger-icon {
+  transform: rotate(180deg);
+}
+
+.floating-dock__menu {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  bottom: calc(100% + 0.75rem);
+  transform: translateX(-50%) translateY(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.3rem;
+  min-width: 180px;
+  padding: 0.6rem;
+  border-radius: 20px;
+  background: rgba(var(--base-rgb), 0.72);
+  border: 1px solid rgba(var(--text-rgb), 0.14);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.08);
-  z-index: 40;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.floating-dock:hover .floating-dock__menu,
+.floating-dock.is-open .floating-dock__menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
 }
 
 .dock-btn {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.6rem;
   background: transparent;
   color: var(--text);
   border: none;
-  border-radius: 999px;
-  padding: 0.6rem 0.9rem;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.dock-btn svg { width: 18px; height: 18px; }
-
-.dock-btn:hover {
-  background: var(--overlay);
-  transform: translateY(-2px);
-}
-
-.dock-btn-add {
-  background: linear-gradient(90deg, var(--iris), var(--love));
-  color: var(--base);
-}
-
-.dock-btn-add:hover { filter: brightness(1.08); }
-
-.dock-btn-theme .theme-icon { color: var(--gold); }
-
-.hidden { display: none !important; }
-
-/* ----------------------------------------------------------------------
-   SIDE DOCK — creator links (CV, GitHub, Email, Other Projects)
-   Desktop: fixed vertical bar, right-center, hover expands to reveal
-   labels. Mobile: collapses to a round corner trigger; tap opens panel.
-   Accent colors are flat/solid per item (no gradients on this element).
----------------------------------------------------------------------- */
-.side-dock {
-  position: fixed;
-  top: 50%;
-  right: 1.25rem;
-  transform: translateY(-50%);
-  z-index: 55;
-}
-
-.side-dock__trigger { display: none; }
-
-.side-dock__panel {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.35rem;
-  width: 56px;
-  padding: 0.85rem 0.6rem;
-  border-radius: 20px;
-  background: rgba(var(--base-rgb), 0.62);
-  border: 1px solid rgba(var(--text-rgb), 0.14);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.06);
-  transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
-  overflow: hidden;
-}
-
-.side-dock__panel:hover,
-.side-dock__panel:focus-within {
-  width: 208px;
-}
-
-.side-dock__brand {
-  font-family: "Reggae One", 'Zen Kaku Gothic New', sans-serif;
-  font-size: 1rem;
-  font-weight: normal;
-  color: var(--rose); /* flat, solid — no gradient on this compact mark */
-  text-align: center;
-  white-space: nowrap;
-  padding: 0.2rem 0 0.6rem;
-  border-bottom: 1px solid rgba(var(--text-rgb), 0.1);
-  margin-bottom: 0.4rem;
-}
-
-.side-dock__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.side-dock__item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  padding: 0.55rem 0.4rem;
   border-radius: 12px;
+  padding: 0.6rem 0.75rem;
   cursor: pointer;
-  text-decoration: none;
   font-family: inherit;
   font-size: 0.85rem;
   font-weight: 600;
@@ -417,58 +450,74 @@ a { color: var(--foam); }
   transition: background 0.2s ease, color 0.2s ease;
 }
 
-.side-dock__item:hover { background: var(--overlay); }
+.dock-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-.side-dock__icon {
-  flex-shrink: 0;
-  width: 1.1rem;
-  text-align: center;
-  font-size: 1.05rem;
+.dock-btn:hover {
+  background: rgba(var(--iris-rgb), 0.18);
+  color: var(--iris);
 }
 
-.side-dock__label {
-  opacity: 0;
-  transition: opacity 0.2s ease 0.05s;
+.dock-btn-add { color: var(--love); }
+.dock-btn-add:hover { background: rgba(var(--iris-rgb), 0.18); color: var(--love); }
+
+.dock-btn-theme .theme-icon { color: var(--gold); }
+
+.hidden { display: none !important; }
+
+/* ----------------------------------------------------------------------
+   HEADER LINK GROUP — "Other Projects" dropdown
+   Same reveal pattern as the floating dock: CSS `:hover` opens it on
+   desktop, and main.js toggles the same `.is-open` class for touch.
+   Opens *below* the icon since it lives in the header.
+---------------------------------------------------------------------- */
+.header-link-group {
+  position: relative;
 }
-.side-dock__panel:hover .side-dock__label,
-.side-dock__panel:focus-within .side-dock__label {
-  opacity: 1;
-}
 
-/* Distinct solid accent per item, applied to icon + label together */
-.side-dock__item--cv:hover { color: var(--iris); }
-.side-dock__item--cv:hover .side-dock__icon { color: var(--iris); }
-
-.side-dock__item--github:hover { color: var(--foam); }
-.side-dock__item--github:hover .side-dock__icon { color: var(--foam); }
-
-.side-dock__item--email:hover { color: var(--pine); }
-.side-dock__item--email:hover .side-dock__icon { color: var(--pine); }
-
-.side-dock__item--projects:hover,
-.side-dock__item--projects[aria-expanded="true"] { color: var(--gold); }
-.side-dock__item--projects:hover .side-dock__icon,
-.side-dock__item--projects[aria-expanded="true"] .side-dock__icon { color: var(--gold); }
-
-.side-dock__subnav {
+.header-link-menu {
+  position: absolute;
+  z-index: 6;
+  top: calc(100% + 0.6rem);
+  right: 0;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  margin-top: 0.4rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid rgba(var(--text-rgb), 0.1);
+  min-width: 160px;
+  padding: 0.5rem;
+  border-radius: 16px;
+  background: rgba(var(--base-rgb), 0.82);
+  border: 1px solid rgba(var(--text-rgb), 0.14);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.header-link-group:hover .header-link-menu,
+.header-link-group.is-open .header-link-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.header-link--projects[aria-expanded="true"] {
+  color: var(--gold);
+  border-color: var(--gold);
 }
 
 .subnav-link {
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 0.4rem 0.4rem 0.4rem 2.2rem; /* aligns under the icon column above */
+  padding: 0.45rem 0.6rem;
   border-radius: 8px;
   text-decoration: none;
   white-space: nowrap;
   transition: background 0.2s ease;
 }
-.subnav-link:hover { background: var(--overlay); }
+.subnav-link:hover { background: rgba(var(--text-rgb), 0.1); }
 
 .subnav-link--blue   { color: var(--foam); }
 .subnav-link--green  { color: var(--pine); }
@@ -496,30 +545,6 @@ a { color: var(--foam); }
 .dock-toast.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
-}
-
-/* ----------------------------------------------------------------------
-   DESKTOP LAYOUT — side dock reads as "beside the grid", not floating
-   in the dead center of the viewport.
-   IMPORTANT: this stays position:fixed (out of normal flow) on purpose.
-   An earlier version turned <body> into a 2-column grid to make the
-   dock a real sidebar column — but that reserved 220px+gap from the
-   entry grid's available width, which is why it collapsed from 4
-   columns down to 2. Keeping it fixed means it never steals width from
-   .entry-grid, so the column count is untouched at any viewport size.
-   It's simply anchored near the top of the grid instead of the
-   vertical center of the whole page.
----------------------------------------------------------------------- */
-@media (min-width: 900px) {
-  .side-dock {
-    top: 15rem;
-    transform: none;
-  }
-
-  /* The "JamporuDex" wordmark already sits in the page header above —
-     repeating it in the side dock just gets clipped and looks broken,
-     so it's dropped here and only shown in the mobile slide-up panel. */
-  .side-dock__brand { display: none; }
 }
 
 /* ----------------------------------------------------------------------
@@ -810,8 +835,6 @@ a { color: var(--foam); }
 @media (max-width: 640px) {
   .lightbox-grid { grid-template-columns: 1fr; }
   .logo-en { font-size: 3rem; }
-  .dock-btn span { display: none; }
-  .dock-btn-add span { display: none; }
   .search-results { grid-template-columns: repeat(2, 1fr); }
   .entry-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -849,93 +872,4 @@ a { color: var(--foam); }
   .card-title { font-size: 0.9rem; }
   .lightbox { max-height: 74vh; }
   .lightbox-cover { max-height: 26vh; }
-}
-
-/* ----------------------------------------------------------------------
-   SIDE DOCK — mobile behavior
-   Vertical hover-dock doesn't work on touch, so below 640px it collapses
-   to a round trigger that sits on the same row as the floating dock,
-   just to the left of the "Add Entry" pill, and tapping it opens the
-   same panel as an overlay.
-   NOTE: the trigger and the floating dock are two separate fixed
-   elements (not siblings I can flex together without the page's HTML),
-   so the offset below is a best-effort estimate of the Add Entry
-   pill's half-width on mobile. If it doesn't sit flush, nudge the
-   translateX value up or down a bit.
----------------------------------------------------------------------- */
-@media (max-width: 640px) {
-  .side-dock {
-    top: auto;
-    bottom: 1.75rem;
-    left: 50%;
-    right: auto;
-    transform: translateX(calc(-50% - 5.5rem));
-  }
-
-  /* Matches .floating-dock's glass pill: same opacity, border, blur
-     recipe and shadow, just circular instead of a wide pill, so the two
-     floating controls read as one consistent system on mobile. */
-  .side-dock__trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 999px;
-    background: rgba(var(--base-rgb), 0.62);
-    border: 1px solid rgba(var(--text-rgb), 0.12);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    color: var(--text);
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.08);
-    transition: transform 0.2s ease, background 0.2s ease;
-  }
-
-  .side-dock__trigger:hover {
-    transform: translateY(-2px);
-    background: rgba(var(--base-rgb), 0.78);
-  }
-
-  /* Anime-flavored icon: hide whatever markup lives inside the button
-     (SVG/text) and render a narutomaki swirl instead — the little
-     fish-cake ramen-topping swirl that shows up in every anime bowl
-     of ramen. Playful, on-theme, zero image assets needed. */
-  .side-dock__trigger > * { display: none; }
-
-  .side-dock__trigger::before {
-    content: "🍥";
-    font-size: 1.4rem;
-    line-height: 1;
-  }
-
-  .side-dock__panel {
-    position: absolute;
-    bottom: 60px;
-    left: 0;
-    right: auto;
-    width: 220px;
-    max-width: calc(100vw - 2.5rem);
-    padding: 1rem 0.75rem;
-    opacity: 0;
-    transform: translateY(12px) scale(0.96);
-    pointer-events: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-
-  .side-dock__panel:hover,
-  .side-dock__panel:focus-within {
-    width: 220px; /* no hover-expand on mobile — width is fixed already */
-  }
-
-  .side-dock__label { opacity: 1; } /* labels always visible once panel is open */
-
-  .side-dock.is-open .side-dock__panel {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    pointer-events: auto;
-  }
-
-  .side-dock__brand { font-size: 1.15rem; }
 }

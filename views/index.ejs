@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="rose-pine">
+<html lang="en" data-theme="tokyo-night-storm">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -15,6 +15,30 @@
        HEADER
   ============================================================ -->
   <header class="site-header">
+    <div class="header-links">
+      <a class="header-link header-link--cv" href="https://jpldeleon.github.io/" target="_blank" rel="noopener" title="CV / Portfolio" aria-label="CV / Portfolio">
+        <i class="fa-solid fa-file-lines"></i>
+      </a>
+      <a class="header-link header-link--github" href="https://github.com/jpldeleon/JamporuDEX" target="_blank" rel="noopener" title="GitHub Repo" aria-label="GitHub Repo">
+        <i class="fa-brands fa-github"></i>
+      </a>
+      <button type="button" class="header-link header-link--email" id="headerCopyEmailBtn" data-user="jpleonard.deleon" data-domain="gmail.com" title="Copy Email" aria-label="Copy Email">
+        <i class="fa-solid fa-envelope"></i>
+      </button>
+
+      <div class="header-link-group" id="headerProjectsGroup">
+        <button type="button" class="header-link header-link--projects" id="headerProjectsToggle" aria-haspopup="true" aria-expanded="false" title="Other Projects" aria-label="Other Projects">
+          <i class="fa-solid fa-folder-open"></i>
+        </button>
+        <div class="header-link-menu" id="headerProjectsMenu">
+          <a href="https://johnoffthewall.github.io/" target="_blank" rel="noopener" class="subnav-link subnav-link--blue">johnoffthewall</a>
+          <a href="https://github.com/jpldeleon/auditKit" target="_blank" rel="noopener" class="subnav-link subnav-link--green">auditkit</a>
+          <a href="https://github.com/jpldeleon/route196" target="_blank" rel="noopener" class="subnav-link subnav-link--purple">route 196</a>
+          <a href="https://github.com/jpldeleon/pixellog" target="_blank" rel="noopener" class="subnav-link subnav-link--yellow">PixelLog</a>
+        </div>
+      </div>
+    </div>
+
     <h1 class="logo">
       <span class="logo-en">JamporuDEX</span>
     </h1>
@@ -89,73 +113,37 @@
   <!-- ============================================================
        FLOATING DOCK
   ============================================================ -->
-  <nav class="floating-dock" aria-label="Quick actions">
-    <button id="openAddModal" class="dock-btn dock-btn-add" aria-label="Add entry">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Add Entry</span>
+  <div class="floating-dock" id="floatingDock">
+    <nav class="floating-dock__menu" id="floatingDockMenu" aria-label="Quick actions">
+      <button id="openAddModal" class="dock-btn dock-btn-add" aria-label="Add entry">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span>Add Entry</span>
+      </button>
+
+      <button id="themeToggle" class="dock-btn dock-btn-theme" aria-label="Toggle theme">
+        <!-- Tokyo Night Storm (dark base) icon: crescent moon -->
+        <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+          <path d="M18 4l.5 1.5L20 6l-1.5.5L18 8l-.5-1.5L16 6l1.5-.5L18 4Z"/>
+        </svg>
+        <!-- Neo Tokyo Synth icon: sparkle star -->
+        <svg id="iconSparkle" class="theme-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3l1.9 5.4L19 10l-5.1 1.6L12 17l-1.9-5.4L5 10l5.1-1.6L12 3Z"/>
+          <path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7L19 15Z"/>
+        </svg>
+        <span>Theme</span>
+      </button>
+
+      <button id="scrollTopBtn" class="dock-btn dock-btn-top" aria-label="Scroll to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        <span>Scroll to Top</span>
+      </button>
+    </nav>
+
+    <button type="button" class="floating-dock__trigger" id="floatingDockTrigger" aria-haspopup="true" aria-expanded="false" aria-label="Open quick actions">
+      <span class="floating-dock__trigger-icon" aria-hidden="true">🍥</span>
     </button>
-
-    <button id="themeToggle" class="dock-btn dock-btn-theme" aria-label="Toggle theme">
-      <!-- Rosé Pine (dark base) icon: crescent moon -->
-      <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
-        <path d="M18 4l.5 1.5L20 6l-1.5.5L18 8l-.5-1.5L16 6l1.5-.5L18 4Z"/>
-      </svg>
-      <!-- Rosé Pine Moon (cool dark) icon: sparkle star -->
-      <svg id="iconSparkle" class="theme-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 3l1.9 5.4L19 10l-5.1 1.6L12 17l-1.9-5.4L5 10l5.1-1.6L12 3Z"/>
-        <path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7L19 15Z"/>
-      </svg>
-    </button>
-
-    <button id="scrollTopBtn" class="dock-btn dock-btn-top" aria-label="Scroll to top">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-    </button>
-  </nav>
-
-  <!-- ============================================================
-       SIDE DOCK — creator links (CV, GitHub, Email, Projects)
-       Desktop: fixed vertical dock, right-center, hover to expand.
-       Mobile: collapses to a corner trigger; tap to open as a panel.
-  ============================================================ -->
-  <aside class="side-dock" id="sideDock">
-    <button type="button" class="side-dock__trigger" id="sideDockTrigger" aria-label="Open creator links" aria-expanded="false">
-      <i class="fa-solid fa-ellipsis-vertical"></i>
-    </button>
-
-    <div class="side-dock__panel" id="sideDockPanel">
-      <div class="side-dock__brand">JamporuDEX</div>
-
-      <nav class="side-dock__nav" aria-label="Creator links">
-        <a class="side-dock__item side-dock__item--cv" href="https://jpldeleon.github.io/" target="_blank" rel="noopener">
-          <i class="fa-solid fa-file-lines side-dock__icon"></i>
-          <span class="side-dock__label">CV / Portfolio</span>
-        </a>
-
-        <a class="side-dock__item side-dock__item--github" href="https://github.com/jpldeleon/JamporuDEX" target="_blank" rel="noopener">
-          <i class="fa-brands fa-github side-dock__icon"></i>
-          <span class="side-dock__label">GitHub Repo</span>
-        </a>
-
-        <button type="button" class="side-dock__item side-dock__item--email" id="copyEmailBtn" data-user="jpleonard.deleon" data-domain="gmail.com">
-          <i class="fa-solid fa-envelope side-dock__icon"></i>
-          <span class="side-dock__label">Copy Email</span>
-        </button>
-
-        <button type="button" class="side-dock__item side-dock__item--projects" id="projectsToggle" aria-expanded="false" aria-controls="projectsSubnav">
-          <i class="fa-solid fa-folder-open side-dock__icon"></i>
-          <span class="side-dock__label">Other Projects</span>
-        </button>
-      </nav>
-
-      <div class="side-dock__subnav hidden" id="projectsSubnav">
-        <a href="https://johnoffthewall.github.io/" target="_blank" rel="noopener" class="subnav-link subnav-link--blue">johnoffthewall</a>
-        <a href="https://github.com/jpldeleon/auditKit" target="_blank" rel="noopener" class="subnav-link subnav-link--green">auditkit</a>
-        <a href="https://github.com/jpldeleon/route196" target="_blank" rel="noopener" class="subnav-link subnav-link--purple">route 196</a>
-        <a href="https://github.com/jpldeleon/pixellog" target="_blank" rel="noopener" class="subnav-link subnav-link--yellow">PixelLog</a>
-      </div>
-    </div>
-  </aside>
+  </div>
 
   <div class="dock-toast" id="dockToast" role="status" aria-live="polite"></div>
 

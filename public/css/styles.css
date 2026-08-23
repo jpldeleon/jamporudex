@@ -167,10 +167,22 @@ a { color: var(--foam); }
      from /css/fonts/). Falls back to Reggae One if the font file fails
      to load, then to Zen Kaku Gothic New. */
   font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
-  font-size: 4.5rem;
+  font-size: 10rem;
   font-weight: normal;
   letter-spacing: 0.02em;
   color: var(--love);
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.logo-link:hover .logo-en {
+  filter: brightness(1.15);
+  transition: filter 0.2s ease;
 }
 
 .tagline {
@@ -971,7 +983,7 @@ a { color: var(--foam); }
 ---------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .lightbox-grid { grid-template-columns: 1fr; }
-  .logo-en { font-size: 3rem; }
+  .logo-en { font-size: 5rem; }
   .search-results { grid-template-columns: repeat(2, 1fr); }
   .entry-grid {
     grid-template-columns: repeat(2, 1fr);

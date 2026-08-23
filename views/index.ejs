@@ -97,7 +97,14 @@
   <div class="dex-pill-anchor" id="dexPillAnchor">
     <div class="dex-pill">
       <div class="dex-pill__dex-wrap">
-        <button type="button" class="dex-pill__btn dex-pill__dex" id="dexTrigger" aria-haspopup="true" aria-expanded="false" aria-label="DEX menu">DEX</button>
+        <button type="button" class="dex-pill__btn dex-pill__dex" id="dexTrigger" aria-haspopup="true" aria-expanded="false" aria-label="DEX menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Uzumaki spiral -->
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            <path d="M12 4 Q18 6 18 12 Q16 18 12 18 Q6 16 6 12 Q8 6 12 4"/>
+            <path d="M12 2 Q20 4 20 12 Q18 22 12 22 Q4 20 4 12 Q6 2 12 2"/>
+          </svg>
+        </button>
 
         <div class="dex-popup" id="dexPopup">
           <a class="dex-popup__link dex-popup__link--a" href="https://jpldeleon.github.io/" target="_blank" rel="noopener">
@@ -130,7 +137,16 @@
       </button>
 
       <button id="themeToggle" type="button" class="dex-pill__btn dex-pill__theme" aria-label="Toggle theme">
-        <span class="track"><span class="knob"></span></span>
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+          <!-- Yin-Yang symbol -->
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <!-- Yin (top) -->
+          <circle cx="12" cy="8" r="1" fill="currentColor"/>
+          <path d="M12 2 A10 10 0 0 1 12 12 A5 5 0 0 1 7 12 A5 5 0 0 0 12 2 Z" fill="currentColor"/>
+          <!-- Yang (bottom) -->
+          <circle cx="12" cy="16" r="1" fill="currentColor"/>
+          <path d="M12 22 A10 10 0 0 1 12 12 A5 5 0 0 1 17 12 A5 5 0 0 0 12 22 Z" fill="currentColor"/>
+        </svg>
       </button>
 
       <button id="scrollTopBtn" type="button" class="dex-pill__btn dex-pill__up" aria-label="Scroll to top">

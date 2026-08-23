@@ -339,10 +339,9 @@ a { color: var(--foam); }
    DEX FLOATING NAV PILL
    Always expanded — all four controls (DEX / Add / Theme / Scroll-up)
    are permanently visible in one glass pill. Only the DEX button itself
-   (not the pill as a whole) reveals the popup, on hover (desktop) or
-   tap (touch, via main.js toggling `.is-open` on #dexPill). The pill
-   never collapses or hides while the popup is open — they live in the
-   same fixed-position wrapper.
+   (not the pill as a whole) reveals the popup, on click (via main.js
+   toggling `.is-open` on the anchor). The pill never collapses or hides
+   while the popup is open — they live in the same fixed-position wrapper.
 ---------------------------------------------------------------------- */
 .dex-pill-anchor {
   position: fixed;
@@ -460,10 +459,10 @@ a { color: var(--foam); }
 .hidden { display: none !important; }
 
 /* ----------------------------------------------------------------------
-   DEX POPUP — opens ONLY from the DEX button (:hover, or `.is-open` on
-   the anchor for touch/click). It never opens from hovering the Add,
-   theme, or scroll-up buttons, or the pill background itself. Same
-   glass + glow language as the pill, tied back to it with a small tail.
+   DEX POPUP — opens ONLY from clicking the DEX button (via `.is-open` on
+   the anchor, toggled by main.js). It never opens from hovering or from
+   clicking the Add, Theme, or Scroll-up buttons. Same glass + glow
+   language as the pill, tied back to it with a small tail.
 ---------------------------------------------------------------------- */
 .dex-popup {
   position: absolute;
@@ -473,10 +472,14 @@ a { color: var(--foam); }
   width: 260px;
   padding: 0.6rem;
   border-radius: 22px;
-  background: rgba(var(--base-rgb), 0.6);
+  /* Higher alpha than the pill (0.6 → 0.9) on purpose: the pill sits
+     over the plain page background, but the popup can land on top of
+     bright, busy cover art. The same 0.6 read as translucent there but
+     see-through here — this keeps it legible over anything behind it. */
+  background: rgba(var(--base-rgb), 0.9);
   border: 1px solid rgba(var(--text-rgb), 0.14);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
   box-shadow:
     0 20px 55px -18px rgba(0, 0, 0, 0.7),
     0 0 0 1px rgba(var(--pill-1-rgb), 0.16),
@@ -502,13 +505,9 @@ a { color: var(--foam); }
   border-bottom-right-radius: 3px;
 }
 
-/* Hover reveal is scoped to the DEX button's own wrapper — hovering
-   Add, Theme, or Scroll-up (siblings of .dex-pill__dex-wrap, outside
-   it) never triggers this. `.dex-popup:hover` keeps it open while the
-   pointer travels from the button up into the popup itself. Touch
-   devices use `.is-open` on the anchor instead, toggled by main.js. */
-.dex-pill__dex-wrap:hover .dex-popup,
-.dex-popup:hover,
+/* Reveal is controlled by `.is-open` on the anchor, toggled by main.js
+   on click. No hover triggers to avoid the disappearing menu issue when
+   moving the mouse from button to popup. */
 .dex-pill-anchor.is-open .dex-popup {
   opacity: 1;
   pointer-events: auto;
@@ -561,6 +560,57 @@ a { color: var(--foam); }
   gap: 0.1rem;
 }
 
+/* Other Projects submenu — expandable on click */
+.dex-popup__sublist {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.dex-popup__sublist.is-expanded {
+  max-height: 500px;
+}
+
+.dex-popup__label-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.6rem 0.6rem 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.18s ease;
+}
+
+.dex-popup__label-btn:hover {
+  color: var(--foam);
+}
+
+.dex-popup__label-btn::after {
+  content: "▼";
+  display: inline-block;
+  font-size: 0.65rem;
+  transition: transform 0.3s ease;
+  margin-left: 0.3rem;
+}
+
+.dex-popup__label-btn.is-expanded::after {
+  transform: rotate(180deg);
+}
+
+.dex-sublist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
 .dex-sublink {
   padding: 0.5rem 0.6rem;
   border-radius: 10px;
@@ -568,6 +618,8 @@ a { color: var(--foam); }
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
+  color: var(--text);
+  display: block;
   transition: background 0.18s ease, color 0.18s ease;
 }
 .dex-sublink:hover { background: rgba(var(--text-rgb), 0.1); }
@@ -632,9 +684,17 @@ a { color: var(--foam); }
   max-width: 460px;
   max-height: 88vh;
   overflow-y: auto;
+  overflow-x: hidden; /* belt-and-suspenders: no content should ever need to scroll sideways */
   position: relative;
   text-align: center;
   animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Same glow language as the DEX pill / popup, so the modal doesn't
+     feel like a different component once it opens. */
+  box-shadow:
+    0 20px 55px -18px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(var(--pill-1-rgb), 0.16),
+    0 0 34px -6px rgba(var(--pill-1-rgb), 0.4),
+    0 0 60px -12px rgba(var(--pill-2-rgb), 0.28);
 }
 
 .modal h2 { margin-top: 0; }
@@ -671,7 +731,7 @@ a { color: var(--foam); }
   font-size: 0.85rem;
 }
 
-.search-row input { flex: 1; }
+.search-row input { flex: 1; min-width: 0; }
 
 .search-row button {
   background: var(--foam);
@@ -803,6 +863,7 @@ a { color: var(--foam); }
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
   animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

@@ -41,12 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // expanded: DEX / Add / Theme / Scroll-up are all permanently visible
   // and interactive, including while the popup below is open.
   //
-  // The popup opens ONLY from the DEX button itself:
-  //   - Desktop: plain CSS `:hover` on #dexTrigger (see styles.css),
-  //     no JS needed for that path.
-  //   - Touch: a tap on #dexTrigger toggles `.is-open` on the anchor,
-  //     since touch devices have no hover. Tapping Add / Theme / Scroll
-  //     never triggers the popup — only #dexTrigger does.
+  // The popup opens ONLY on click of the DEX button itself:
+  //   - A click on #dexTrigger toggles `.is-open` on the anchor.
+  //   - Clicking Add / Theme / Scroll-up never triggers the popup.
+  //   - Clicking a DEX popup link closes the popup again.
   // ------------------------------------------------------------------
   const dexPillAnchor = document.getElementById('dexPillAnchor');
   const dexTrigger = document.getElementById('dexTrigger');
@@ -62,9 +60,28 @@ document.addEventListener('DOMContentLoaded', () => {
     dexTrigger.setAttribute('aria-expanded', String(isOpen));
   });
 
+  // ------------------------------------------------------------------
+  // OTHER PROJECTS SUBMENU — click to expand/collapse
+  // ------------------------------------------------------------------
+  const otherProjectsToggle = document.getElementById('otherProjectsToggle');
+  const otherProjectsList = document.getElementById('otherProjectsList');
+
+  otherProjectsToggle.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const isExpanded = otherProjectsList.classList.toggle('is-expanded');
+    otherProjectsToggle.classList.toggle('is-expanded', isExpanded);
+    otherProjectsToggle.setAttribute('aria-expanded', String(isExpanded));
+  });
+
   // Picking a link inside the popup closes it again rather than leaving
   // it pinned open after a tap.
-  document.querySelectorAll('#dexPopup .dex-popup__link, #dexPopup .dex-sublink').forEach((el) => {
+  document.querySelectorAll('#dexPopup .dex-popup__link').forEach((el) => {
+    el.addEventListener('click', closeDexPopup);
+  });
+
+  // Sublinks (projects) should close the whole DEX popup when clicked
+  document.querySelectorAll('#dexPopup .dex-sublink').forEach((el) => {
     el.addEventListener('click', closeDexPopup);
   });
 

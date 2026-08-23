@@ -18,8 +18,8 @@
 
 @font-face {
   font-family: "Kagesumi Brush";
-  src: url("fonts/Kagesumi-Brush.otf") format("opentype"),
-       url("fonts/Kagesumi-Brush.ttf") format("truetype");
+  src: url("fonts/kagesumi-brush.otf") format("opentype"),
+       url("fonts/kagesumi-brush.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -392,6 +392,45 @@ a { color: var(--foam); }
 }
 .dex-pill__btn:hover { background: rgba(var(--text-rgb), 0.08); }
 .dex-pill__btn svg { width: 19px; height: 19px; }
+
+/* Styling for SVG icons — inherit theme colors */
+.dex-icon {
+  width: 19px;
+  height: 19px;
+  display: block;
+}
+
+/* DEX button — magenta/pink */
+.dex-pill__dex .dex-icon {
+  color: var(--pill-1);
+}
+
+/* Add entry — blue/purple */
+.dex-pill__add .dex-icon {
+  color: var(--pill-2);
+}
+
+/* Theme toggle — cyan */
+.dex-pill__theme .dex-icon {
+  color: var(--pill-3);
+}
+
+/* Scroll up — magenta/green */
+.dex-pill__up .dex-icon {
+  color: var(--pill-4);
+}
+
+/* Yin-yang rotation wrapper for theme toggle animation */
+.theme-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-icon-wrapper.rotating {
+  transform: rotateZ(180deg);
+}
 
 /* Wraps ONLY the DEX button + its popup, so hover/focus scoping below
    never bleeds onto Add / Theme / Scroll-up, which sit outside this

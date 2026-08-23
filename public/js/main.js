@@ -27,6 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
   themeToggleBtn.addEventListener('click', () => {
     const current = root.getAttribute('data-theme');
     applyTheme(current === 'tokyo-night-storm' ? 'dracula' : 'tokyo-night-storm');
+    
+    // Animate yin-yang icon rotation
+    const themeWrapper = document.querySelector('.theme-icon-wrapper');
+    if (themeWrapper) {
+      themeWrapper.classList.add('rotating');
+      setTimeout(() => themeWrapper.classList.remove('rotating'), 600);
+    }
   });
 
   // ------------------------------------------------------------------

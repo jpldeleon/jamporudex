@@ -4,6 +4,21 @@
    ====================================================================== */
 
 /* ----------------------------------------------------------------------
+   CUSTOM FONT — Kagesumi Brush
+   OTF/TTF only, no woff/woff2 conversion needed — every modern browser
+   reads these formats natively. Font file lives in /fonts alongside
+   this stylesheet.
+---------------------------------------------------------------------- */
+@font-face {
+  font-family: "Kagesumi Brush";
+  src: url("fonts/Kagesumi-Brush.otf") format("opentype"),
+       url("fonts/Kagesumi-Brush.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ----------------------------------------------------------------------
    THEME VARIABLES
    Switch is driven by [data-theme] on <html>, toggled + persisted via
    LocalStorage in main.js.
@@ -85,8 +100,10 @@ a { color: var(--foam); }
 }
 
 .logo-en {
-  font-size: 2.6rem;
-  font-weight: 700;
+  font-family: "Kagesumi Brush", 'Zen Kaku Gothic New', sans-serif;
+  font-size: 3.2rem;
+  font-weight: normal;
+  letter-spacing: 0.02em;
   background: linear-gradient(90deg, var(--love), var(--gold), var(--foam));
   -webkit-background-clip: text;
   background-clip: text;
@@ -306,6 +323,161 @@ a { color: var(--foam); }
 .dock-btn-theme .theme-icon { color: var(--gold); }
 
 .hidden { display: none !important; }
+
+/* ----------------------------------------------------------------------
+   SIDE DOCK — creator links (CV, GitHub, Email, Other Projects)
+   Desktop: fixed vertical bar, right-center, hover expands to reveal
+   labels. Mobile: collapses to a round corner trigger; tap opens panel.
+   Accent colors are flat/solid per item (no gradients on this element).
+---------------------------------------------------------------------- */
+.side-dock {
+  position: fixed;
+  top: 50%;
+  right: 1.25rem;
+  transform: translateY(-50%);
+  z-index: 55;
+}
+
+.side-dock__trigger { display: none; }
+
+.side-dock__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+  width: 56px;
+  padding: 0.85rem 0.6rem;
+  border-radius: 20px;
+  background: rgba(31, 29, 46, 0.55);
+  border: 1px solid rgba(224, 222, 244, 0.14);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(196, 167, 231, 0.06);
+  transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+  overflow: hidden;
+}
+
+.side-dock__panel:hover,
+.side-dock__panel:focus-within {
+  width: 208px;
+}
+
+.side-dock__brand {
+  font-family: "Kagesumi Brush", 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--rose); /* flat, solid — no gradient on this compact mark */
+  text-align: center;
+  white-space: nowrap;
+  padding: 0.2rem 0 0.6rem;
+  border-bottom: 1px solid rgba(224, 222, 244, 0.1);
+  margin-bottom: 0.4rem;
+}
+
+.side-dock__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.side-dock__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0.55rem 0.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.side-dock__item:hover { background: var(--overlay); }
+
+.side-dock__icon {
+  flex-shrink: 0;
+  width: 1.1rem;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+.side-dock__label {
+  opacity: 0;
+  transition: opacity 0.2s ease 0.05s;
+}
+.side-dock__panel:hover .side-dock__label,
+.side-dock__panel:focus-within .side-dock__label {
+  opacity: 1;
+}
+
+/* Distinct solid accent per item, applied to icon + label together */
+.side-dock__item--cv:hover { color: var(--iris); }
+.side-dock__item--cv:hover .side-dock__icon { color: var(--iris); }
+
+.side-dock__item--github:hover { color: var(--foam); }
+.side-dock__item--github:hover .side-dock__icon { color: var(--foam); }
+
+.side-dock__item--email:hover { color: var(--pine); }
+.side-dock__item--email:hover .side-dock__icon { color: var(--pine); }
+
+.side-dock__item--projects:hover,
+.side-dock__item--projects[aria-expanded="true"] { color: var(--gold); }
+.side-dock__item--projects:hover .side-dock__icon,
+.side-dock__item--projects[aria-expanded="true"] .side-dock__icon { color: var(--gold); }
+
+.side-dock__subnav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.4rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(224, 222, 244, 0.1);
+}
+
+.subnav-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.4rem 0.4rem 2.2rem; /* aligns under the icon column above */
+  border-radius: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+.subnav-link:hover { background: var(--overlay); }
+
+.subnav-link--blue   { color: var(--foam); }
+.subnav-link--green  { color: var(--pine); }
+.subnav-link--purple { color: var(--iris); }
+.subnav-link--yellow { color: var(--gold); }
+
+/* Toast confirmation (email copy, etc.) */
+.dock-toast {
+  position: fixed;
+  bottom: 6.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--text);
+  color: var(--base);
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 80;
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.5);
+}
+.dock-toast.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
 /* ----------------------------------------------------------------------
    MODALS (Add / Edit)
@@ -594,7 +766,7 @@ a { color: var(--foam); }
 ---------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .lightbox-grid { grid-template-columns: 1fr; }
-  .logo-en { font-size: 2rem; }
+  .logo-en { font-size: 2.3rem; }
   .dock-btn span { display: none; }
   .dock-btn-add span { display: none; }
   .search-results { grid-template-columns: repeat(2, 1fr); }
@@ -634,4 +806,64 @@ a { color: var(--foam); }
   .card-title { font-size: 0.9rem; }
   .lightbox { max-height: 74vh; }
   .lightbox-cover { max-height: 26vh; }
+}
+
+/* ----------------------------------------------------------------------
+   SIDE DOCK — mobile behavior
+   Vertical hover-dock doesn't work on touch, so below 640px it collapses
+   to a round trigger fixed bottom-right (kept clear of the bottom-center
+   floating-dock pill), and tapping it opens the same panel as an overlay.
+---------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .side-dock {
+    top: auto;
+    bottom: 1.75rem;
+    right: 1.25rem;
+    transform: none;
+  }
+
+  .side-dock__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(31, 29, 46, 0.75);
+    border: 1px solid rgba(224, 222, 244, 0.16);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  }
+
+  .side-dock__panel {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    width: 220px;
+    max-width: calc(100vw - 2.5rem);
+    padding: 1rem 0.75rem;
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .side-dock__panel:hover,
+  .side-dock__panel:focus-within {
+    width: 220px; /* no hover-expand on mobile — width is fixed already */
+  }
+
+  .side-dock__label { opacity: 1; } /* labels always visible once panel is open */
+
+  .side-dock.is-open .side-dock__panel {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .side-dock__brand { font-size: 1.15rem; }
 }

@@ -222,6 +222,56 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ------------------------------------------------------------------
+  // SIDE DOCK — mobile trigger, projects subnav, email copy + toast
+  // ------------------------------------------------------------------
+  const sideDock = document.getElementById('sideDock');
+  const sideDockTrigger = document.getElementById('sideDockTrigger');
+  const projectsToggle = document.getElementById('projectsToggle');
+  const projectsSubnav = document.getElementById('projectsSubnav');
+  const copyEmailBtn = document.getElementById('copyEmailBtn');
+  const dockToast = document.getElementById('dockToast');
+
+  let toastTimer;
+  function showDockToast(message) {
+    dockToast.textContent = message;
+    dockToast.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => dockToast.classList.remove('is-visible'), 2200);
+  }
+
+  // Mobile: tap the corner trigger to open/close the panel as an overlay.
+  // (On desktop the CSS :hover on .side-dock__panel handles this instead.)
+  sideDockTrigger.addEventListener('click', () => {
+    const isOpen = sideDock.classList.toggle('is-open');
+    sideDockTrigger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!sideDock.contains(e.target) && sideDock.classList.contains('is-open')) {
+      sideDock.classList.remove('is-open');
+      sideDockTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Folder icon toggles the project subnav open/closed.
+  projectsToggle.addEventListener('click', () => {
+    const isOpen = projectsSubnav.classList.toggle('hidden') === false;
+    projectsToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Email is never written in the HTML — it's assembled from two data
+  // attributes at click time, then copied straight to the clipboard.
+  copyEmailBtn.addEventListener('click', async () => {
+    const address = `${copyEmailBtn.dataset.user}@${copyEmailBtn.dataset.domain}`;
+    try {
+      await navigator.clipboard.writeText(address);
+      showDockToast('Email copied to clipboard!');
+    } catch (err) {
+      showDockToast('Could not copy — clipboard access blocked.');
+    }
+  });
+
+  // ------------------------------------------------------------------
   // DELETE CONFIRMATION (from the lightbox's inline delete form)
   // ------------------------------------------------------------------
   document.getElementById('lb_deleteForm').addEventListener('submit', (e) => {

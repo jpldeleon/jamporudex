@@ -45,6 +45,10 @@
   --iris:     #bb9af7;
   --muted:    #9aa5ce;
   --highlight-low: #303447;
+  /* RGB triplets so rgba(var(--x-rgb), alpha) works for glass panels */
+  --base-rgb: 36, 40, 59;
+  --text-rgb: 192, 202, 245;
+  --iris-rgb: 187, 154, 247;
 }
 
 /* Tokyo Night Light — same source palette, light variant */
@@ -61,6 +65,9 @@
   --iris:     #5a3e8e;
   --muted:    #6c6e75;
   --highlight-low: #e2e3ea;
+  --base-rgb: 230, 231, 237;
+  --text-rgb: 52, 59, 88;
+  --iris-rgb: 90, 62, 142;
 }
 
 * { box-sizing: border-box; }
@@ -109,8 +116,14 @@ a { color: var(--foam); }
 }
 
 .logo-en {
-  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
-  font-size: 3.2rem;
+  /* "Kagesumi Brush" is intentionally left out of this stack — the
+     font file doesn't exist at /fonts, so referencing it here was
+     causing browsers to fall through to a random system serif instead
+     of the intended look. Reggae One is loaded via the @import above
+     and actually renders. Swap Kagesumi Brush back in first if/when
+     the real font file gets added to /fonts. */
+  font-family: "Reggae One", 'Zen Kaku Gothic New', sans-serif;
+  font-size: 4.5rem;
   font-weight: normal;
   letter-spacing: 0.02em;
   color: var(--love);
@@ -190,7 +203,7 @@ a { color: var(--foam); }
 .entry-card:hover {
   transform: translateY(-6px);
   border-color: var(--iris);
-  box-shadow: 0 14px 30px -12px rgba(196, 167, 231, 0.35);
+  box-shadow: 0 14px 30px -12px rgba(var(--iris-rgb), 0.35);
 }
 
 .card-cover-btn {
@@ -229,8 +242,8 @@ a { color: var(--foam); }
   top: 0.6rem;
   right: 0.6rem;
   backdrop-filter: blur(6px);
-  background: rgba(25, 23, 36, 0.65);
-  border: 1px solid rgba(224, 222, 244, 0.15);
+  background: rgba(var(--base-rgb), 0.65);
+  border: 1px solid rgba(var(--text-rgb), 0.15);
 }
 
 .status-reading, .status-watching { color: var(--foam); }
@@ -288,11 +301,11 @@ a { color: var(--foam); }
   gap: 0.75rem;
   padding: 0.6rem 0.8rem;
   border-radius: 999px;
-  background: rgba(31, 29, 46, 0.55);
-  border: 1px solid rgba(224, 222, 244, 0.12);
+  background: rgba(var(--base-rgb), 0.62);
+  border: 1px solid rgba(var(--text-rgb), 0.12);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(196, 167, 231, 0.08);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.08);
   z-index: 40;
 }
 
@@ -354,11 +367,11 @@ a { color: var(--foam); }
   width: 56px;
   padding: 0.85rem 0.6rem;
   border-radius: 20px;
-  background: rgba(31, 29, 46, 0.55);
-  border: 1px solid rgba(224, 222, 244, 0.14);
+  background: rgba(var(--base-rgb), 0.62);
+  border: 1px solid rgba(var(--text-rgb), 0.14);
   backdrop-filter: blur(16px) saturate(140%);
   -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(196, 167, 231, 0.06);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.06);
   transition: width 0.3s cubic-bezier(0.65, 0, 0.35, 1);
   overflow: hidden;
 }
@@ -369,14 +382,14 @@ a { color: var(--foam); }
 }
 
 .side-dock__brand {
-  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
+  font-family: "Reggae One", 'Zen Kaku Gothic New', sans-serif;
   font-size: 1rem;
   font-weight: normal;
   color: var(--rose); /* flat, solid — no gradient on this compact mark */
   text-align: center;
   white-space: nowrap;
   padding: 0.2rem 0 0.6rem;
-  border-bottom: 1px solid rgba(224, 222, 244, 0.1);
+  border-bottom: 1px solid rgba(var(--text-rgb), 0.1);
   margin-bottom: 0.4rem;
 }
 
@@ -443,7 +456,7 @@ a { color: var(--foam); }
   gap: 0.15rem;
   margin-top: 0.4rem;
   padding-top: 0.5rem;
-  border-top: 1px solid rgba(224, 222, 244, 0.1);
+  border-top: 1px solid rgba(var(--text-rgb), 0.1);
 }
 
 .subnav-link {
@@ -486,44 +499,22 @@ a { color: var(--foam); }
 }
 
 /* ----------------------------------------------------------------------
-   DESKTOP LAYOUT — side dock sits beside the grid, not floating over it
-   Below this width the side dock stays as the fixed vertical pill
-   (fine for narrower windows/tablets); above it, the page becomes a
-   two-column grid so the dock is a sticky sidebar column instead of an
-   overlay that covers the entries when it expands on hover.
+   DESKTOP LAYOUT — side dock reads as "beside the grid", not floating
+   in the dead center of the viewport.
+   IMPORTANT: this stays position:fixed (out of normal flow) on purpose.
+   An earlier version turned <body> into a 2-column grid to make the
+   dock a real sidebar column — but that reserved 220px+gap from the
+   entry grid's available width, which is why it collapsed from 4
+   columns down to 2. Keeping it fixed means it never steals width from
+   .entry-grid, so the column count is untouched at any viewport size.
+   It's simply anchored near the top of the grid instead of the
+   vertical center of the whole page.
 ---------------------------------------------------------------------- */
 @media (min-width: 900px) {
-  body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 220px;
-    grid-template-areas:
-      "header header"
-      "main   aside";
-    column-gap: 2rem;
-    align-items: start;
-    max-width: 1440px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  .site-header { grid-area: header; }
-  .container   { grid-area: main; }
-
   .side-dock {
-    grid-area: aside;
-    position: sticky;
-    top: 2rem;
-    right: auto;
-    left: auto;
+    top: 15rem;
     transform: none;
-    align-self: start;
-    justify-self: end;
-    margin-top: 2.5rem; /* roughly lines up with the entry grid, not the H1 */
   }
-
-  /* Dedicated column = no need to hide-until-hover anymore */
-  .side-dock__panel { width: 208px; }
-  .side-dock__label { opacity: 1; }
 
   /* The "JamporuDex" wordmark already sits in the page header above —
      repeating it in the side dock just gets clipped and looks broken,
@@ -818,7 +809,7 @@ a { color: var(--foam); }
 ---------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .lightbox-grid { grid-template-columns: 1fr; }
-  .logo-en { font-size: 2.3rem; }
+  .logo-en { font-size: 3rem; }
   .dock-btn span { display: none; }
   .dock-btn-add span { display: none; }
   .search-results { grid-template-columns: repeat(2, 1fr); }
@@ -863,15 +854,22 @@ a { color: var(--foam); }
 /* ----------------------------------------------------------------------
    SIDE DOCK — mobile behavior
    Vertical hover-dock doesn't work on touch, so below 640px it collapses
-   to a round trigger fixed bottom-right (kept clear of the bottom-center
-   floating-dock pill), and tapping it opens the same panel as an overlay.
+   to a round trigger that sits on the same row as the floating dock,
+   just to the left of the "Add Entry" pill, and tapping it opens the
+   same panel as an overlay.
+   NOTE: the trigger and the floating dock are two separate fixed
+   elements (not siblings I can flex together without the page's HTML),
+   so the offset below is a best-effort estimate of the Add Entry
+   pill's half-width on mobile. If it doesn't sit flush, nudge the
+   translateX value up or down a bit.
 ---------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .side-dock {
     top: auto;
     bottom: 1.75rem;
-    right: 1.25rem;
-    transform: none;
+    left: 50%;
+    right: auto;
+    transform: translateX(calc(-50% - 5.5rem));
   }
 
   /* Matches .floating-dock's glass pill: same opacity, border, blur
@@ -884,20 +882,20 @@ a { color: var(--foam); }
     width: 52px;
     height: 52px;
     border-radius: 999px;
-    background: rgba(31, 29, 46, 0.55);
-    border: 1px solid rgba(224, 222, 244, 0.12);
+    background: rgba(var(--base-rgb), 0.62);
+    border: 1px solid rgba(var(--text-rgb), 0.12);
     backdrop-filter: blur(16px) saturate(140%);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
     color: var(--text);
     font-size: 1.1rem;
     cursor: pointer;
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(196, 167, 231, 0.08);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.08);
     transition: transform 0.2s ease, background 0.2s ease;
   }
 
   .side-dock__trigger:hover {
     transform: translateY(-2px);
-    background: rgba(31, 29, 46, 0.7);
+    background: rgba(var(--base-rgb), 0.78);
   }
 
   /* Anime-flavored icon: hide whatever markup lives inside the button
@@ -915,7 +913,8 @@ a { color: var(--foam); }
   .side-dock__panel {
     position: absolute;
     bottom: 60px;
-    right: 0;
+    left: 0;
+    right: auto;
     width: 220px;
     max-width: calc(100vw - 2.5rem);
     padding: 1rem 0.75rem;

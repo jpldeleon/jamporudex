@@ -18,8 +18,8 @@
 
 @font-face {
   font-family: "Kagesumi Brush";
-  src: url("fonts/Kagesumi-Brush.otf") format("opentype"),
-       url("fonts/Kagesumi-Brush.ttf") format("truetype");
+  src: url("fonts/kagesumi-brush.otf") format("opentype"),
+       url("fonts/kagesumi-brush.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -163,13 +163,10 @@ a { color: var(--foam); }
 }
 
 .logo-en {
-  /* "Kagesumi Brush" is intentionally left out of this stack — the
-     font file doesn't exist at /fonts, so referencing it here was
-     causing browsers to fall through to a random system serif instead
-     of the intended look. Reggae One is loaded via the @import above
-     and actually renders. Swap Kagesumi Brush back in first if/when
-     the real font file gets added to /fonts. */
-  font-family: "Reggae One", 'Zen Kaku Gothic New', sans-serif;
+  /* Kagesumi Brush is the primary choice (loaded via @font-face above
+     from /css/fonts/). Falls back to Reggae One if the font file fails
+     to load, then to Zen Kaku Gothic New. */
+  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
   font-size: 4.5rem;
   font-weight: normal;
   letter-spacing: 0.02em;

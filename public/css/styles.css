@@ -598,4 +598,40 @@ a { color: var(--foam); }
   .dock-btn span { display: none; }
   .dock-btn-add span { display: none; }
   .search-results { grid-template-columns: repeat(2, 1fr); }
+  .entry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  /* Keep the lightbox as a floating card, not a full-screen takeover */
+  .lightbox-overlay {
+    padding: 1rem;
+    align-items: center;
+  }
+  .lightbox {
+    max-height: 78vh;
+    border-radius: 16px;
+  }
+  .lightbox-grid {
+    padding: 1.25rem;
+    gap: 1rem;
+  }
+  .lightbox-cover {
+    aspect-ratio: auto;
+    max-height: 32vh;
+    width: 100%;
+    object-fit: cover;
+  }
+  .lightbox-actions {
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .entry-grid { gap: 0.6rem; }
+  .card-body { padding: 0.7rem 0.75rem 0.85rem; }
+  .card-title { font-size: 0.9rem; }
+  .lightbox { max-height: 74vh; }
+  .lightbox-cover { max-height: 26vh; }
 }

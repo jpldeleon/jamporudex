@@ -19,18 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function applyTheme(theme) {
     root.setAttribute('data-theme', theme);
-    const isMoon = theme === 'rose-pine-moon';
-    iconMoon.classList.toggle('hidden', isMoon);
-    iconSparkle.classList.toggle('hidden', !isMoon);
+    const isLight = theme === 'tokyo-night-light';
+    iconMoon.classList.toggle('hidden', isLight);
+    iconSparkle.classList.toggle('hidden', !isLight);
     localStorage.setItem(THEME_KEY, theme);
   }
 
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'rose-pine';
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'tokyo-night-storm';
   applyTheme(savedTheme);
 
   themeToggleBtn.addEventListener('click', () => {
     const current = root.getAttribute('data-theme');
-    applyTheme(current === 'rose-pine' ? 'rose-pine-moon' : 'rose-pine');
+    applyTheme(current === 'tokyo-night-storm' ? 'tokyo-night-light' : 'tokyo-night-storm');
   });
 
   // ------------------------------------------------------------------

@@ -1,14 +1,21 @@
 /* ======================================================================
    JamporuDex — styles.css
-   Rosé Pine (dark default) + Rosé Pine Moon theme, retro-modern anime UI
+   Tokyo Night Storm (dark default) + Tokyo Night Light theme,
+   retro-modern anime UI
    ====================================================================== */
 
 /* ----------------------------------------------------------------------
-   CUSTOM FONT — Kagesumi Brush
-   OTF/TTF only, no woff/woff2 conversion needed — every modern browser
-   reads these formats natively. Font file lives in /fonts alongside
-   this stylesheet.
+   FONTS
+   "Reggae One" is a bold Japanese-poster/manga-title style face — used
+   for the logo wordmark. It's loaded from Google Fonts because the
+   local "Kagesumi Brush" file (referenced below) isn't actually present
+   in /fonts, which is why the logo was silently falling back to the
+   system sans-serif before. The @font-face is kept as a first choice
+   in case that file gets added later; Reggae One is the reliable
+   fallback that actually renders today.
 ---------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Reggae+One&family=Space+Grotesk:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap');
+
 @font-face {
   font-family: "Kagesumi Brush";
   src: url("fonts/Kagesumi-Brush.otf") format("opentype"),
@@ -23,35 +30,37 @@
    Switch is driven by [data-theme] on <html>, toggled + persisted via
    LocalStorage in main.js.
 ---------------------------------------------------------------------- */
+/* Tokyo Night Storm — https://wixdaq.github.io/Tokyo-Night-Website/palette.html */
 :root,
-[data-theme="rose-pine"] {
-  --base:     #191724;
-  --surface:  #1f1d2e;
-  --overlay:  #26233a;
-  --text:     #e0def4;
-  --love:     #eb6f92;
-  --gold:     #f6c177;
-  --rose:     #ebbcba;
-  --pine:     #31748f;
-  --foam:     #9ccfd8;
-  --iris:     #c4a7e7;
-  --muted:    #6e6a86;
-  --highlight-low: #21202e;
+[data-theme="tokyo-night-storm"] {
+  --base:     #24283b;
+  --surface:  #292e42;
+  --overlay:  #414868;
+  --text:     #c0caf5;
+  --love:     #f7768e;
+  --gold:     #e0af68;
+  --rose:     #ff9e64;
+  --pine:     #9ece6a;
+  --foam:     #7dcfff;
+  --iris:     #bb9af7;
+  --muted:    #9aa5ce;
+  --highlight-low: #303447;
 }
 
-[data-theme="rose-pine-moon"] {
-  --base:     #232136;
-  --surface:  #2a273f;
-  --overlay:  #393552;
-  --text:     #e0def4;
-  --love:     #eb6f92;
-  --gold:     #ea9a97;
-  --rose:     #ea9a97;
-  --pine:     #3e8fb0;
-  --foam:     #9ccfd8;
-  --iris:     #c4a7e7;
-  --muted:    #817c9c;
-  --highlight-low: #2a283e;
+/* Tokyo Night Light — same source palette, light variant */
+[data-theme="tokyo-night-light"] {
+  --base:     #e6e7ed;
+  --surface:  #ffffff;
+  --overlay:  #d5d6e0;
+  --text:     #343b58;
+  --love:     #8c4351;
+  --gold:     #8f5e15;
+  --rose:     #965027;
+  --pine:     #385f0d;
+  --foam:     #006c86;
+  --iris:     #5a3e8e;
+  --muted:    #6c6e75;
+  --highlight-low: #e2e3ea;
 }
 
 * { box-sizing: border-box; }
@@ -100,14 +109,11 @@ a { color: var(--foam); }
 }
 
 .logo-en {
-  font-family: "Kagesumi Brush", 'Zen Kaku Gothic New', sans-serif;
+  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
   font-size: 3.2rem;
   font-weight: normal;
   letter-spacing: 0.02em;
-  background: linear-gradient(90deg, var(--love), var(--gold), var(--foam));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--love);
 }
 
 .tagline {
@@ -363,7 +369,7 @@ a { color: var(--foam); }
 }
 
 .side-dock__brand {
-  font-family: "Kagesumi Brush", 'Zen Kaku Gothic New', sans-serif;
+  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
   font-size: 1rem;
   font-weight: normal;
   color: var(--rose); /* flat, solid — no gradient on this compact mark */
@@ -477,6 +483,52 @@ a { color: var(--foam); }
 .dock-toast.is-visible {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+/* ----------------------------------------------------------------------
+   DESKTOP LAYOUT — side dock sits beside the grid, not floating over it
+   Below this width the side dock stays as the fixed vertical pill
+   (fine for narrower windows/tablets); above it, the page becomes a
+   two-column grid so the dock is a sticky sidebar column instead of an
+   overlay that covers the entries when it expands on hover.
+---------------------------------------------------------------------- */
+@media (min-width: 900px) {
+  body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    grid-template-areas:
+      "header header"
+      "main   aside";
+    column-gap: 2rem;
+    align-items: start;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .site-header { grid-area: header; }
+  .container   { grid-area: main; }
+
+  .side-dock {
+    grid-area: aside;
+    position: sticky;
+    top: 2rem;
+    right: auto;
+    left: auto;
+    transform: none;
+    align-self: start;
+    justify-self: end;
+    margin-top: 2.5rem; /* roughly lines up with the entry grid, not the H1 */
+  }
+
+  /* Dedicated column = no need to hide-until-hover anymore */
+  .side-dock__panel { width: 208px; }
+  .side-dock__label { opacity: 1; }
+
+  /* The "JamporuDex" wordmark already sits in the page header above —
+     repeating it in the side dock just gets clipped and looks broken,
+     so it's dropped here and only shown in the mobile slide-up panel. */
+  .side-dock__brand { display: none; }
 }
 
 /* ----------------------------------------------------------------------
@@ -822,21 +874,42 @@ a { color: var(--foam); }
     transform: none;
   }
 
+  /* Matches .floating-dock's glass pill: same opacity, border, blur
+     recipe and shadow, just circular instead of a wide pill, so the two
+     floating controls read as one consistent system on mobile. */
   .side-dock__trigger {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(31, 29, 46, 0.75);
-    border: 1px solid rgba(224, 222, 244, 0.16);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    background: rgba(31, 29, 46, 0.55);
+    border: 1px solid rgba(224, 222, 244, 0.12);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
     color: var(--text);
     font-size: 1.1rem;
     cursor: pointer;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(196, 167, 231, 0.08);
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .side-dock__trigger:hover {
+    transform: translateY(-2px);
+    background: rgba(31, 29, 46, 0.7);
+  }
+
+  /* Anime-flavored icon: hide whatever markup lives inside the button
+     (SVG/text) and render a narutomaki swirl instead — the little
+     fish-cake ramen-topping swirl that shows up in every anime bowl
+     of ramen. Playful, on-theme, zero image assets needed. */
+  .side-dock__trigger > * { display: none; }
+
+  .side-dock__trigger::before {
+    content: "🍥";
+    font-size: 1.4rem;
+    line-height: 1;
   }
 
   .side-dock__panel {

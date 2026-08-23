@@ -15,30 +15,6 @@
        HEADER
   ============================================================ -->
   <header class="site-header">
-    <div class="header-links">
-      <a class="header-link header-link--cv" href="https://jpldeleon.github.io/" target="_blank" rel="noopener" title="CV / Portfolio" aria-label="CV / Portfolio">
-        <i class="fa-solid fa-file-lines"></i>
-      </a>
-      <a class="header-link header-link--github" href="https://github.com/jpldeleon/JamporuDEX" target="_blank" rel="noopener" title="GitHub Repo" aria-label="GitHub Repo">
-        <i class="fa-brands fa-github"></i>
-      </a>
-      <button type="button" class="header-link header-link--email" id="headerCopyEmailBtn" data-user="jpleonard.deleon" data-domain="gmail.com" title="Copy Email" aria-label="Copy Email">
-        <i class="fa-solid fa-envelope"></i>
-      </button>
-
-      <div class="header-link-group" id="headerProjectsGroup">
-        <button type="button" class="header-link header-link--projects" id="headerProjectsToggle" aria-haspopup="true" aria-expanded="false" title="Other Projects" aria-label="Other Projects">
-          <i class="fa-solid fa-folder-open"></i>
-        </button>
-        <div class="header-link-menu" id="headerProjectsMenu">
-          <a href="https://johnoffthewall.github.io/" target="_blank" rel="noopener" class="subnav-link subnav-link--blue">johnoffthewall</a>
-          <a href="https://github.com/jpldeleon/auditKit" target="_blank" rel="noopener" class="subnav-link subnav-link--green">auditkit</a>
-          <a href="https://github.com/jpldeleon/route196" target="_blank" rel="noopener" class="subnav-link subnav-link--purple">route 196</a>
-          <a href="https://github.com/jpldeleon/pixellog" target="_blank" rel="noopener" class="subnav-link subnav-link--yellow">PixelLog</a>
-        </div>
-      </div>
-    </div>
-
     <h1 class="logo">
       <span class="logo-en">JamporuDEX</span>
     </h1>
@@ -111,38 +87,54 @@
   </main>
 
   <!-- ============================================================
-       FLOATING DOCK
+       DEX FLOATING NAV PILL
+       Always fully expanded — DEX / Add / Theme / Scroll-up are all
+       permanently visible and interactive, even while the DEX popup
+       below is open. The popup opens ONLY from the DEX button itself
+       (hover on desktop, tap on touch via main.js) — never from
+       hovering Add, Theme, or Scroll-up.
   ============================================================ -->
-  <div class="floating-dock" id="floatingDock">
-    <nav class="floating-dock__menu" id="floatingDockMenu" aria-label="Quick actions">
-      <button id="openAddModal" class="dock-btn dock-btn-add" aria-label="Add entry">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Add Entry</span>
+  <div class="dex-pill-anchor" id="dexPillAnchor">
+    <div class="dex-pill">
+      <div class="dex-pill__dex-wrap">
+        <button type="button" class="dex-pill__btn dex-pill__dex" id="dexTrigger" aria-haspopup="true" aria-expanded="false" aria-label="DEX menu">DEX</button>
+
+        <div class="dex-popup" id="dexPopup">
+          <a class="dex-popup__link dex-popup__link--a" href="https://jpldeleon.github.io/" target="_blank" rel="noopener">
+            <i class="fa-solid fa-file-lines"></i> CV Portfolio
+          </a>
+          <a class="dex-popup__link dex-popup__link--b" href="https://github.com/jpldeleon/JamporuDEX" target="_blank" rel="noopener">
+            <i class="fa-brands fa-github"></i> GitHub Repo
+          </a>
+          <button type="button" class="dex-popup__link dex-popup__link--a" id="dexCopyEmailBtn" data-user="jpleonard.deleon" data-domain="gmail.com">
+            <i class="fa-solid fa-envelope"></i> Copy Email
+          </button>
+
+          <div class="dex-popup__hr"></div>
+          <div class="dex-popup__label">Other Projects</div>
+          <div class="dex-popup__sublist">
+            <a href="https://johnoffthewall.github.io/" target="_blank" rel="noopener" class="dex-sublink dex-sublink--1">johnoffthewall</a>
+            <a href="https://github.com/jpldeleon/auditKit" target="_blank" rel="noopener" class="dex-sublink dex-sublink--2">auditkit</a>
+            <a href="https://github.com/jpldeleon/route196" target="_blank" rel="noopener" class="dex-sublink dex-sublink--3">route 196</a>
+            <a href="https://github.com/jpldeleon/pixellog" target="_blank" rel="noopener" class="dex-sublink dex-sublink--4">PixelLog</a>
+          </div>
+        </div>
+      </div>
+
+      <span class="dex-pill__divider"></span>
+
+      <button id="openAddModal" type="button" class="dex-pill__btn dex-pill__add" aria-label="Add entry">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
 
-      <button id="themeToggle" class="dock-btn dock-btn-theme" aria-label="Toggle theme">
-        <!-- Tokyo Night Storm (dark base) icon: crescent moon -->
-        <svg id="iconMoon" class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
-          <path d="M18 4l.5 1.5L20 6l-1.5.5L18 8l-.5-1.5L16 6l1.5-.5L18 4Z"/>
-        </svg>
-        <!-- Neo Tokyo Synth icon: sparkle star -->
-        <svg id="iconSparkle" class="theme-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3l1.9 5.4L19 10l-5.1 1.6L12 17l-1.9-5.4L5 10l5.1-1.6L12 3Z"/>
-          <path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7L19 15Z"/>
-        </svg>
-        <span>Theme</span>
+      <button id="themeToggle" type="button" class="dex-pill__btn dex-pill__theme" aria-label="Toggle theme">
+        <span class="track"><span class="knob"></span></span>
       </button>
 
-      <button id="scrollTopBtn" class="dock-btn dock-btn-top" aria-label="Scroll to top">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-        <span>Scroll to Top</span>
+      <button id="scrollTopBtn" type="button" class="dex-pill__btn dex-pill__up" aria-label="Scroll to top">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
-    </nav>
-
-    <button type="button" class="floating-dock__trigger" id="floatingDockTrigger" aria-haspopup="true" aria-expanded="false" aria-label="Open quick actions">
-      <span class="floating-dock__trigger-icon" aria-hidden="true">🍥</span>
-    </button>
+    </div>
   </div>
 
   <div class="dock-toast" id="dockToast" role="status" aria-live="polite"></div>

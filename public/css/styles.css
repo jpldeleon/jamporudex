@@ -30,7 +30,9 @@
    Switch is driven by [data-theme] on <html>, toggled + persisted via
    LocalStorage in main.js.
 ---------------------------------------------------------------------- */
-/* Tokyo Night Storm — https://wixdaq.github.io/Tokyo-Night-Website/palette.html */
+/* Tokyo Night Storm — https://wixdaq.github.io/Tokyo-Night-Website/palette.html
+   Background #24283b. Primary accents locked to the official Storm set:
+   Blue #7aa2f7, Cyan #7dcfff, Magenta #bb9af7, Foreground #c0caf5. */
 :root,
 [data-theme="tokyo-night-storm"] {
   --base:     #24283b;
@@ -49,30 +51,62 @@
   --base-rgb: 36, 40, 59;
   --text-rgb: 192, 202, 245;
   --iris-rgb: 187, 154, 247;
+
+  /* Nav-pill / lightbox accent set — strictly the 4 colors specified
+     for this theme, used only by the DEX pill + its popup below. */
+  --pill-blue:    #7aa2f7;
+  --pill-cyan:    #7dcfff;
+  --pill-magenta: #bb9af7;
+  --pill-blue-rgb:    122, 162, 247;
+  --pill-cyan-rgb:    125, 207, 255;
+  --pill-magenta-rgb: 187, 154, 247;
+  /* brand / secondary / tertiary / quaternary roles for the 4 pill controls */
+  --pill-1: var(--pill-magenta); /* DEX brand */
+  --pill-2: var(--pill-blue);    /* Add entry */
+  --pill-3: var(--pill-cyan);    /* Theme toggle */
+  --pill-4: var(--pill-magenta); /* Scroll up */
+  --pill-1-rgb: var(--pill-magenta-rgb);
+  --pill-2-rgb: var(--pill-blue-rgb);
 }
 
-/* Neo Tokyo Synth — https://www.color-hex.com/color-palette/33626
-   (#55e7ff, #00ccfd, #ff34b3, #2011a2, #201148). The five palette hexes
-   are used literally for base/overlay/link/accent duty below; --surface,
-   --highlight-low, --text and --muted are tuned off of them for contrast,
-   and --iris/--pine are close blends of the palette's blue+pink so every
-   status/accent role still reads as part of the same neon family. */
-[data-theme="neo-tokyo-synth"] {
-  --base:     #201148;
-  --surface:  #2a1868;
-  --overlay:  #2011a2;
-  --text:     #e8f7ff;
-  --love:     #ff34b3;
-  --gold:     #55e7ff;
-  --rose:     #55e7ff;
-  --pine:     #22e8a3;
-  --foam:     #00ccfd;
-  --iris:     #9b2ad0;
-  --muted:    #9a9fd9;
-  --highlight-low: #170b36;
-  --base-rgb: 32, 17, 72;
-  --text-rgb: 232, 247, 255;
-  --iris-rgb: 155, 42, 208;
+/* Dracula — https://draculatheme.com/spec
+   Background #282a36, Current Line #44475a, Foreground #f8f8f2,
+   Comment #6272a4, Cyan #8be9fd, Green #50fa7b, Orange #ffb86c,
+   Pink #ff79c6, Purple #bd93f9, Red #ff5555, Yellow #f1fa8c. */
+[data-theme="dracula"] {
+  --base:     #282a36;
+  --surface:  #343746;
+  --overlay:  #44475a;
+  --text:     #f8f8f2;
+  --love:     #ff5555;
+  --gold:     #f1fa8c;
+  --rose:     #ffb86c;
+  --pine:     #50fa7b;
+  --foam:     #8be9fd;
+  --iris:     #bd93f9;
+  --muted:    #6272a4;
+  --highlight-low: #21222c;
+  --base-rgb: 40, 42, 54;
+  --text-rgb: 248, 248, 242;
+  --iris-rgb: 189, 147, 249;
+
+  /* Nav-pill / lightbox accent set — strictly the 4 colors specified
+     for this theme, used only by the DEX pill + its popup below. */
+  --pill-purple: #bd93f9;
+  --pill-pink:   #ff79c6;
+  --pill-cyan:   #8be9fd;
+  --pill-green:  #50fa7b;
+  --pill-purple-rgb: 189, 147, 249;
+  --pill-pink-rgb:   255, 121, 198;
+  --pill-cyan-rgb:   139, 233, 253;
+  --pill-green-rgb:  80, 250, 123;
+  /* brand / secondary / tertiary / quaternary roles for the 4 pill controls */
+  --pill-1: var(--pill-pink);   /* DEX brand */
+  --pill-2: var(--pill-purple); /* Add entry */
+  --pill-3: var(--pill-cyan);   /* Theme toggle */
+  --pill-4: var(--pill-green);  /* Scroll up */
+  --pill-1-rgb: var(--pill-pink-rgb);
+  --pill-2-rgb: var(--pill-purple-rgb);
 }
 
 * { box-sizing: border-box; }
@@ -106,66 +140,12 @@ a { color: var(--foam); }
   text-align: center;
 }
 
-/* ----------------------------------------------------------------------
-   HEADER LINKS — CV, GitHub repo, email. Same destinations as the side
-   dock, just surfaced up top where they're immediately visible instead
-   of tucked behind a hover-only side panel.
----------------------------------------------------------------------- */
-.header-links {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  display: flex;
-  gap: 0.6rem;
-  z-index: 5;
-}
-
-.header-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(var(--base-rgb), 0.5);
-  border: 1px solid rgba(var(--text-rgb), 0.16);
-  color: var(--muted);
-  font-size: 1rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-
-.header-link:hover {
-  transform: translateY(-2px);
-  background: rgba(var(--text-rgb), 0.12);
-}
-
-.header-link--cv:hover { color: var(--iris); border-color: var(--iris); }
-.header-link--github:hover { color: var(--foam); border-color: var(--foam); }
-.header-link--email:hover { color: var(--pine); border-color: var(--pine); }
-.header-link--projects:hover { color: var(--gold); border-color: var(--gold); }
-
-@media (max-width: 640px) {
-  .header-links {
-    position: static;
-    justify-content: center;
-    margin: 1rem 0 0;
-  }
-
-  /* Centered under the folder icon instead of right-aligned, so it
-     can't run off the edge of a narrow viewport. */
-  .header-link-menu {
-    right: auto;
-    left: 50%;
-    transform: translateX(-50%) translateY(6px);
-  }
-
-  .header-link-group:hover .header-link-menu,
-  .header-link-group.is-open .header-link-menu {
-    transform: translateX(-50%) translateY(0);
-  }
-}
+/* NOTE: the old .header-links / .header-link-group block that used to
+   live here (CV, GitHub, email, "Other Projects") has been removed.
+   That content is now exclusively inside the DEX popup — see the
+   "DEX FLOATING NAV PILL" section below. Remove the matching
+   <div class="header-links">…</div> markup from your template; nothing
+   in this stylesheet references those classes anymore. */
 
 .logo {
   display: flex;
@@ -356,12 +336,15 @@ a { color: var(--foam); }
 }
 
 /* ----------------------------------------------------------------------
-   FLOATING DOCK
-   Collapsed to a single circular trigger. Hovering (desktop) or clicking
-   (any device — main.js toggles `.is-open`) reveals a vertical menu of
-   the three quick actions floating just above it.
+   DEX FLOATING NAV PILL
+   Always expanded — all four controls (DEX / Add / Theme / Scroll-up)
+   are permanently visible in one glass pill. Only the DEX button itself
+   (not the pill as a whole) reveals the popup, on hover (desktop) or
+   tap (touch, via main.js toggling `.is-open` on #dexPill). The pill
+   never collapses or hides while the popup is open — they live in the
+   same fixed-position wrapper.
 ---------------------------------------------------------------------- */
-.floating-dock {
+.dex-pill-anchor {
   position: fixed;
   left: 50%;
   bottom: 1.75rem;
@@ -369,160 +352,237 @@ a { color: var(--foam); }
   z-index: 40;
 }
 
-.floating-dock__trigger {
+.dex-pill {
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
+  gap: 0.15rem;
+  padding: 0.4rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--iris), var(--love));
-  color: var(--base);
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.25);
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.floating-dock__trigger:hover,
-.floating-dock.is-open .floating-dock__trigger {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
-}
-
-.floating-dock__trigger-icon {
-  font-size: 1.5rem;
-  line-height: 1;
-  display: block;
-  transition: transform 0.35s ease;
-}
-
-.floating-dock.is-open .floating-dock__trigger-icon {
-  transform: rotate(180deg);
-}
-
-.floating-dock__menu {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  bottom: calc(100% + 0.75rem);
-  transform: translateX(-50%) translateY(10px);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.3rem;
-  min-width: 180px;
-  padding: 0.6rem;
-  border-radius: 20px;
-  background: rgba(var(--base-rgb), 0.72);
+  background: rgba(var(--base-rgb), 0.55);
   border: 1px solid rgba(var(--text-rgb), 0.14);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.1);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 12px 40px -14px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(var(--pill-1-rgb), 0.18),
+    0 0 26px -4px rgba(var(--pill-1-rgb), 0.5),
+    0 0 46px -10px rgba(var(--pill-2-rgb), 0.32);
+  transition: box-shadow 0.4s ease, background 0.4s ease;
 }
 
-.floating-dock:hover .floating-dock__menu,
-.floating-dock.is-open .floating-dock__menu {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+.dex-pill__divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(var(--text-rgb), 0.14);
+  margin: 0 0.15rem;
+  flex-shrink: 0;
 }
 
-.dock-btn {
+/* Shared button reset for all four pill controls */
+.dex-pill__btn {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  background: transparent;
-  color: var(--text);
+  justify-content: center;
+  height: 46px;
   border: none;
-  border-radius: 12px;
-  padding: 0.6rem 0.75rem;
+  background: transparent;
+  color: var(--muted);
   cursor: pointer;
   font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background 0.2s ease, color 0.2s ease;
+  border-radius: 999px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.dex-pill__btn:hover { background: rgba(var(--text-rgb), 0.08); }
+.dex-pill__btn svg { width: 19px; height: 19px; }
+
+/* Wraps ONLY the DEX button + its popup, so hover/focus scoping below
+   never bleeds onto Add / Theme / Scroll-up, which sit outside this
+   wrapper as plain siblings in .dex-pill. */
+.dex-pill__dex-wrap {
+  position: relative;
+  display: flex;
 }
 
-.dock-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-.dock-btn:hover {
-  background: rgba(var(--iris-rgb), 0.18);
-  color: var(--iris);
+/* 1. DEX — brand trigger. Rendered in the Kagesumi Brush display face
+   (falls back to Reggae One — see the @font-face comment above — since
+   the Kagesumi font file isn't present in /fonts yet). Solid color only,
+   no gradient, per spec. This is the ONLY element that opens the popup. */
+.dex-pill__dex {
+  padding: 0 1.1rem 0 1rem;
+  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
+  font-size: 1.15rem;
+  color: var(--pill-1);
+  letter-spacing: 0.02em;
+  gap: 0.3rem;
+}
+.dex-pill__dex:hover,
+.dex-pill-anchor.is-open .dex-pill__dex {
+  color: var(--pill-1);
+  background: rgba(var(--pill-1-rgb), 0.18);
 }
 
-.dock-btn-add { color: var(--love); }
-.dock-btn-add:hover { background: rgba(var(--iris-rgb), 0.18); color: var(--love); }
+/* 2. Add Entry */
+.dex-pill__add { width: 46px; color: var(--pill-2); }
+.dex-pill__add:hover { color: var(--pill-2); background: rgba(var(--pill-2-rgb), 0.16); }
 
-.dock-btn-theme .theme-icon { color: var(--gold); }
+/* 3. Theme toggle — a small switch instead of a swapped icon so both
+   themes read cleanly with only their own accent colors. */
+.dex-pill__theme { width: 46px; }
+.dex-pill__theme .track {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--overlay);
+  transition: background 0.3s ease;
+}
+.dex-pill__theme .knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pill-1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+}
+[data-theme="dracula"] .dex-pill__theme .knob {
+  transform: translateX(14px);
+  background: var(--pill-3);
+}
+
+/* 4. Scroll to top */
+.dex-pill__up { width: 46px; color: var(--pill-4); }
+.dex-pill__up:hover { color: var(--pill-4); background: rgba(var(--pill-2-rgb), 0.16); }
 
 .hidden { display: none !important; }
 
 /* ----------------------------------------------------------------------
-   HEADER LINK GROUP — "Other Projects" dropdown
-   Same reveal pattern as the floating dock: CSS `:hover` opens it on
-   desktop, and main.js toggles the same `.is-open` class for touch.
-   Opens *below* the icon since it lives in the header.
+   DEX POPUP — opens ONLY from the DEX button (:hover, or `.is-open` on
+   the anchor for touch/click). It never opens from hovering the Add,
+   theme, or scroll-up buttons, or the pill background itself. Same
+   glass + glow language as the pill, tied back to it with a small tail.
 ---------------------------------------------------------------------- */
-.header-link-group {
-  position: relative;
-}
-
-.header-link-menu {
+.dex-popup {
   position: absolute;
-  z-index: 6;
-  top: calc(100% + 0.6rem);
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  min-width: 160px;
-  padding: 0.5rem;
-  border-radius: 16px;
-  background: rgba(var(--base-rgb), 0.82);
+  z-index: 1;
+  bottom: calc(100% + 1rem);
+  left: 0;
+  width: 260px;
+  padding: 0.6rem;
+  border-radius: 22px;
+  background: rgba(var(--base-rgb), 0.6);
   border: 1px solid rgba(var(--text-rgb), 0.14);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(var(--iris-rgb), 0.1);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    0 20px 55px -18px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(var(--pill-1-rgb), 0.16),
+    0 0 34px -6px rgba(var(--pill-1-rgb), 0.45),
+    0 0 60px -12px rgba(var(--pill-2-rgb), 0.3);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(6px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(10px) scale(0.96);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.header-link-group:hover .header-link-menu,
-.header-link-group.is-open .header-link-menu {
+.dex-popup::after {
+  content: "";
+  position: absolute;
+  bottom: -7px;
+  left: 28px;
+  width: 14px;
+  height: 14px;
+  background: inherit;
+  border-right: 1px solid rgba(var(--text-rgb), 0.14);
+  border-bottom: 1px solid rgba(var(--text-rgb), 0.14);
+  transform: rotate(45deg);
+  border-bottom-right-radius: 3px;
+}
+
+/* Hover reveal is scoped to the DEX button's own wrapper — hovering
+   Add, Theme, or Scroll-up (siblings of .dex-pill__dex-wrap, outside
+   it) never triggers this. `.dex-popup:hover` keeps it open while the
+   pointer travels from the button up into the popup itself. Touch
+   devices use `.is-open` on the anchor instead, toggled by main.js. */
+.dex-pill__dex-wrap:hover .dex-popup,
+.dex-popup:hover,
+.dex-pill-anchor.is-open .dex-popup {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
-.header-link--projects[aria-expanded="true"] {
-  color: var(--gold);
-  border-color: var(--gold);
-}
-
-.subnav-link {
-  font-size: 0.78rem;
+.dex-popup__link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.45rem 0.6rem;
-  border-radius: 8px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+.dex-popup__link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Alternating theme-conforming hover pair, per spec:
+   Storm → blue / cyan · Dracula → purple / pink */
+.dex-popup__link--a:hover { color: var(--pill-blue, var(--pill-purple)); background: rgba(var(--pill-blue-rgb, var(--pill-purple-rgb)), 0.16); }
+.dex-popup__link--b:hover { color: var(--pill-cyan); background: rgba(var(--pill-cyan-rgb), 0.16); }
+
+.dex-popup__hr {
+  height: 1px;
+  background: rgba(var(--text-rgb), 0.12);
+  margin: 0.3rem 0.3rem;
+}
+
+.dex-popup__label {
+  padding: 0.6rem 0.6rem 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dex-popup__sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.dex-sublink {
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.2s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
-.subnav-link:hover { background: rgba(var(--text-rgb), 0.1); }
+.dex-sublink:hover { background: rgba(var(--text-rgb), 0.1); }
 
-.subnav-link--blue   { color: var(--foam); }
-.subnav-link--green  { color: var(--pine); }
-.subnav-link--purple { color: var(--iris); }
-.subnav-link--yellow { color: var(--gold); }
+/* Each project cycles through the theme's own accent set — no colors
+   outside the two approved palettes. */
+.dex-sublink--1:hover { color: var(--pill-blue, var(--pill-purple)); }
+.dex-sublink--2:hover { color: var(--pill-cyan); }
+.dex-sublink--3:hover { color: var(--pill-magenta, var(--pill-pink)); }
+.dex-sublink--4:hover { color: var(--pill-green, var(--pill-blue)); }
+
+@media (max-width: 480px) {
+  .dex-popup { left: -0.4rem; width: min(78vw, 280px); }
+  .dex-popup::after { left: 34px; }
+}
 
 /* Toast confirmation (email copy, etc.) */
 .dock-toast {

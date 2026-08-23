@@ -1,27 +1,23 @@
 /**
  * ======================================================================
  * JamporuDex — main.js
- * Handles: theme toggle (LocalStorage), floating dock actions, the
- * Add Entry modal's Jikan search flow, the Edit modal, the Lightbox,
- * and scroll-to-top.
+ * Handles: theme toggle (LocalStorage, Tokyo Night Storm ⇄ Dracula only),
+ * the DEX floating nav pill + its DEX-only popup, the Add Entry modal's
+ * Jikan search flow, the Edit modal, the Lightbox, and scroll-to-top.
  * ======================================================================
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   // ------------------------------------------------------------------
-  // THEME TOGGLE
+  // THEME TOGGLE — strictly two dark themes, no light mode, no third
+  // "synth" variant. The switch on the pill just flips data-theme.
   // ------------------------------------------------------------------
   const THEME_KEY = 'jamporudex-theme';
   const root = document.documentElement;
   const themeToggleBtn = document.getElementById('themeToggle');
-  const iconMoon = document.getElementById('iconMoon');
-  const iconSparkle = document.getElementById('iconSparkle');
 
   function applyTheme(theme) {
     root.setAttribute('data-theme', theme);
-    const isSynth = theme === 'neo-tokyo-synth';
-    iconMoon.classList.toggle('hidden', isSynth);
-    iconSparkle.classList.toggle('hidden', !isSynth);
     localStorage.setItem(THEME_KEY, theme);
   }
 
@@ -30,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   themeToggleBtn.addEventListener('click', () => {
     const current = root.getAttribute('data-theme');
-    applyTheme(current === 'tokyo-night-storm' ? 'neo-tokyo-synth' : 'tokyo-night-storm');
+    applyTheme(current === 'tokyo-night-storm' ? 'dracula' : 'tokyo-night-storm');
   });
 
   // ------------------------------------------------------------------
@@ -41,34 +37,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ------------------------------------------------------------------
-  // FLOATING DOCK — single-pill quick actions
-  // Desktop: CSS `:hover` on .floating-dock reveals the menu above the
-  // trigger. Touch devices have no hover, so a click also toggles the
-  // same `.is-open` class; either path shows the identical menu.
+  // DEX FLOATING NAV PILL — the pill (#dexPillAnchor) is always fully
+  // expanded: DEX / Add / Theme / Scroll-up are all permanently visible
+  // and interactive, including while the popup below is open.
+  //
+  // The popup opens ONLY from the DEX button itself:
+  //   - Desktop: plain CSS `:hover` on #dexTrigger (see styles.css),
+  //     no JS needed for that path.
+  //   - Touch: a tap on #dexTrigger toggles `.is-open` on the anchor,
+  //     since touch devices have no hover. Tapping Add / Theme / Scroll
+  //     never triggers the popup — only #dexTrigger does.
   // ------------------------------------------------------------------
-  const floatingDock = document.getElementById('floatingDock');
-  const floatingDockTrigger = document.getElementById('floatingDockTrigger');
+  const dexPillAnchor = document.getElementById('dexPillAnchor');
+  const dexTrigger = document.getElementById('dexTrigger');
 
-  function closeFloatingDock() {
-    floatingDock.classList.remove('is-open');
-    floatingDockTrigger.setAttribute('aria-expanded', 'false');
+  function closeDexPopup() {
+    dexPillAnchor.classList.remove('is-open');
+    dexTrigger.setAttribute('aria-expanded', 'false');
   }
 
-  floatingDockTrigger.addEventListener('click', (e) => {
+  dexTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
-    const isOpen = floatingDock.classList.toggle('is-open');
-    floatingDockTrigger.setAttribute('aria-expanded', String(isOpen));
+    const isOpen = dexPillAnchor.classList.toggle('is-open');
+    dexTrigger.setAttribute('aria-expanded', String(isOpen));
   });
 
-  // Picking any action closes the menu again rather than leaving it
-  // pinned open after a tap.
-  document.querySelectorAll('#floatingDockMenu .dock-btn').forEach((btn) => {
-    btn.addEventListener('click', closeFloatingDock);
+  // Picking a link inside the popup closes it again rather than leaving
+  // it pinned open after a tap.
+  document.querySelectorAll('#dexPopup .dex-popup__link, #dexPopup .dex-sublink').forEach((el) => {
+    el.addEventListener('click', closeDexPopup);
   });
 
   document.addEventListener('click', (e) => {
-    if (!floatingDock.contains(e.target) && floatingDock.classList.contains('is-open')) {
-      closeFloatingDock();
+    if (!dexPillAnchor.contains(e.target) && dexPillAnchor.classList.contains('is-open')) {
+      closeDexPopup();
     }
   });
 
@@ -102,8 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.modal-overlay:not(.hidden), .lightbox-overlay:not(.hidden)')
       .forEach((el) => el.classList.add('hidden'));
     document.body.style.overflow = '';
-    closeFloatingDock();
-    closeHeaderProjectsMenu();
+    closeDexPopup();
   });
 
   // ------------------------------------------------------------------
@@ -256,11 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ------------------------------------------------------------------
-  // HEADER — "Other Projects" dropdown + email copy toast
-  // Same hover(CSS)/click(JS) reveal pattern as the floating dock.
+  // DEX POPUP — email copy toast
+  // CV Portfolio and GitHub Repo are plain links (no JS needed); the
+  // email action is the one interactive piece, since the address is
+  // never written into the HTML and is copied to the clipboard instead.
   // ------------------------------------------------------------------
-  const headerProjectsGroup = document.getElementById('headerProjectsGroup');
-  const headerProjectsToggle = document.getElementById('headerProjectsToggle');
   const dockToast = document.getElementById('dockToast');
 
   let toastTimer;
@@ -271,26 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
     toastTimer = setTimeout(() => dockToast.classList.remove('is-visible'), 2200);
   }
 
-  function closeHeaderProjectsMenu() {
-    headerProjectsGroup.classList.remove('is-open');
-    headerProjectsToggle.setAttribute('aria-expanded', 'false');
-  }
-
-  headerProjectsToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = headerProjectsGroup.classList.toggle('is-open');
-    headerProjectsToggle.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!headerProjectsGroup.contains(e.target) && headerProjectsGroup.classList.contains('is-open')) {
-      closeHeaderProjectsMenu();
-    }
-  });
-
-  // Email is never written in the HTML — it's assembled from two data
-  // attributes at click time, then copied straight to the clipboard.
-  document.getElementById('headerCopyEmailBtn').addEventListener('click', async (e) => {
+  // Email is assembled from two data attributes at click time, then
+  // copied straight to the clipboard.
+  document.getElementById('dexCopyEmailBtn').addEventListener('click', async (e) => {
     const btn = e.currentTarget;
     const address = `${btn.dataset.user}@${btn.dataset.domain}`;
     try {

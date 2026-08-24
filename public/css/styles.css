@@ -166,7 +166,7 @@ a { color: var(--foam); }
   /* Kagesumi Brush is the primary choice (loaded via @font-face above
      from /css/fonts/). Falls back to Reggae One if the font file fails
      to load, then to Zen Kaku Gothic New. */
-  font-family: "Kagesumi Brush", "Reggae One", 'Zen Kaku Gothic New', sans-serif;
+  font-family: "Kagesumi Brush";
   font-size: 10rem;
   font-weight: normal;
   letter-spacing: 0.02em;
